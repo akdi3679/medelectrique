@@ -1,0 +1,51 @@
+{
+  "nav": { "services": "Services", "projects": "Réalisations", "testimonials": "Témoignages", "contact": "Contact", "booking": "Réserver", "quote": "Devis gratuit" },
+  "hero": { "title": "Électricien & climatisation à Tataouine", "subtitle": "Installation électrique, climatisation et réparation — un travail propre, sûr et garanti. Devis gratuit, intervention dans toute la Tunisie.", "cta": "Demander un devis" },
+  "services": {
+    "title": "Nos Services", "subtitle": "Trois spécialités, un seul standard : la qualité",
+    "electrical": { "title": "Installation Électrique", "desc": "Installation complète de systèmes électriques résidentiels et commerciaux, aux normes et en toute sécurité." },
+    "ac": { "title": "Installation Climatisation", "desc": "Pose et mise en service de climatiseurs split et multi-split, avec conseil sur le bon dimensionnement." },
+    "repair": { "title": "Réparation & Dépannage", "desc": "Diagnostic et réparation rapide de toute panne électrique ou climatisation, intervention urgente." }
+  },
+  "process": { "title": "Comment ça se passe", "subtitle": "Simple, transparent, sans surprise", "s1t": "Appel ou WhatsApp", "s1d": "Vous décrivez le besoin, on répond vite.", "s2t": "Visite & devis gratuit", "s2d": "On se déplace, on mesure, on chiffre. Gratuit, sans engagement.", "s3t": "Exécution propre", "s3d": "Travail soigné, aux normes, dans les délais annoncés.", "s4t": "Suivi après chantier", "s4d": "On reste joignables une fois le travail terminé." },
+  "projects": { "title": "Nos Réalisations", "subtitle": "Quelques exemples de notre travail", "viewMore": "Voir plus" },
+  "stats2": { "freeQuote": "Devis gratuit", "urgent": "Urgences 24/7", "coverage": "Toute la Tunisie", "clean": "Travail propre & soigné" },
+  "quote": {
+    "title": "Obtenez Votre Devis", "subtitle": "Estimation instantanée selon nos trois services",
+    "selectService": "Sélectionnez le Service", "choosePackage": "Choisissez la Formule", "addons": "Options",
+    "basePrice": "Prix de Base", "total": "Estimation Totale", "request": "Envoyer ma demande sur WhatsApp",
+    "warranty": "Garantie Étendue", "maintenance": "Contrat de Maintenance", "emergency": "Priorité Urgence 24/7",
+    "disclaimer": "Estimation indicative — le prix exact est confirmé après la visite gratuite.",
+    "services": { "electrical": "Installation Électrique", "ac": "Climatisation", "repair": "Réparation" },
+    "options": {
+      "electrical": ["Résidentiel (appartement / maison)", "Commercial (bureau / magasin)", "Industriel (atelier / usine)"],
+      "ac": ["Split (1 pièce)", "Multi-split (2 à 4 pièces)", "Installation complète + entretien"],
+      "repair": ["Dépannage simple", "Intervention urgente", "Contrat de maintenance annuel"]
+    }
+  },
+  "booking": {
+    "bookAppointment": "Réserver une Intervention", "description": "Choisissez le créneau, on vous confirme sur WhatsApp.",
+    "fullName": "Nom Complet", "email": "Email", "phone": "Téléphone", "serviceType": "Type de Service",
+    "preferredDate": "Date Préférée", "preferredTime": "Heure Préférée", "confirmBooking": "Envoyer sur WhatsApp",
+    "successMessage": "Demande envoyée sur WhatsApp !",
+    "maintenance": "Maintenance", "installation": "Installation", "emergencyRepair": "Réparation urgente", "inspection": "Inspection / devis",
+    "yourName": "Votre nom", "yourEmail": "votre@email.com"
+  },
+  "bio": {
+    "title": "À propos de Mohammed Kadi", "subtitle": "Fondateur & Électricien Expert",
+    "paragraph1": "Avec plus de 10 ans d'expérience dans le domaine électrique, Mohammed Kadi a fondé Med Elec avec une vision simple : offrir des solutions électriques de qualité professionnelle à tous.",
+    "paragraph2": "Spécialisé dans les installations électriques, la climatisation et la réparation, il dirige une équipe passionnée qui partage ses valeurs de qualité, de sécurité et d'innovation.",
+    "paragraph3": "Chaque projet est pour lui une opportunité de démontrer son expertise technique et son engagement envers la satisfaction client."
+  },
+  "testimonials": { "title": "Témoignages Clients", "subtitle": "La confiance de nos clients, notre meilleure publicité" },
+  "contact": {
+    "title": "Contactez-nous", "subtitle": "Un projet, une panne, une question ? Réponse rapide garantie.",
+    "name": "Nom", "email": "Email", "phone": "Téléphone", "message": "Message", "send": "Envoyer sur WhatsApp",
+    "yourName": "Votre nom", "yourEmail": "votre@email.com", "yourMessage": "Décrivez votre besoin...", "address": "Adresse",
+    "reason": "Motif de la demande",
+    "reasons": { "electrical": "Installation électrique", "ac": "Installation climatisation", "repair": "Réparation / dépannage", "other": "Autre" }
+  },
+  "hours": { "title": "Horaires", "week": "Lundi – Samedi : 8h00 – 18h00", "sun": "Dimanche : fermé", "emergency": "Urgences dépannage : 24h/24, 7j/7" },
+  "map": { "title": "Zone d'intervention", "zone": "Disponibles dans toute la Tunisie" },
+  "footer": { "rights": "Tous droits réservés", "tagline": "Solutions électriques professionnelles pour chaque projet", "company": "Entreprise", "about": "À Propos", "certifications": "Certifications", "follow": "Nous Suivre", "privacy": "Politique de Confidentialité", "terms": "Conditions d'Utilisation" }
+}

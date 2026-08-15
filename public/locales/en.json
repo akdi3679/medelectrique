@@ -1,0 +1,51 @@
+{
+  "nav": { "services": "Services", "projects": "Projects", "testimonials": "Testimonials", "contact": "Contact", "booking": "Book Now", "quote": "Free Quote" },
+  "hero": { "title": "Electrician & AC specialist in Tataouine", "subtitle": "Electrical installation, air conditioning and repair — clean, safe, guaranteed work. Free quote, intervention all over Tunisia.", "cta": "Get a Quote" },
+  "services": {
+    "title": "Our Services", "subtitle": "Three specialties, one standard: quality",
+    "electrical": { "title": "Electrical Installation", "desc": "Complete electrical systems for residential and commercial projects, up to code and fully safe." },
+    "ac": { "title": "AC Installation", "desc": "Supply and installation of split and multi-split air conditioning, with proper sizing advice." },
+    "repair": { "title": "Repair & Troubleshooting", "desc": "Fast diagnosis and repair of any electrical or AC failure, emergency intervention." }
+  },
+  "process": { "title": "How It Works", "subtitle": "Simple, transparent, no surprises", "s1t": "Call or WhatsApp", "s1d": "Describe your need, we reply fast.", "s2t": "Free visit & quote", "s2d": "We come, measure, quote. Free, no commitment.", "s3t": "Clean execution", "s3d": "Tidy work, up to code, on the announced schedule.", "s4t": "After-work follow-up", "s4d": "We stay reachable once the job is done." },
+  "projects": { "title": "Our Projects", "subtitle": "A few examples of our work", "viewMore": "View More" },
+  "stats2": { "freeQuote": "Free quote", "urgent": "24/7 emergencies", "coverage": "All of Tunisia", "clean": "Clean & careful work" },
+  "quote": {
+    "title": "Get Your Quote", "subtitle": "Instant estimate across our three services",
+    "selectService": "Select Service", "choosePackage": "Choose Package", "addons": "Add-ons",
+    "basePrice": "Base Price", "total": "Total Estimate", "request": "Send My Request on WhatsApp",
+    "warranty": "Extended Warranty", "maintenance": "Maintenance Contract", "emergency": "24/7 Emergency Priority",
+    "disclaimer": "Indicative estimate — exact price confirmed after the free visit.",
+    "services": { "electrical": "Electrical Installation", "ac": "Air Conditioning", "repair": "Repair" },
+    "options": {
+      "electrical": ["Residential (apartment / house)", "Commercial (office / store)", "Industrial (workshop / factory)"],
+      "ac": ["Split (1 room)", "Multi-split (2-4 rooms)", "Full installation + servicing"],
+      "repair": ["Simple repair", "Urgent intervention", "Annual maintenance contract"]
+    }
+  },
+  "booking": {
+    "bookAppointment": "Book an Intervention", "description": "Pick a slot, we confirm on WhatsApp.",
+    "fullName": "Full Name", "email": "Email", "phone": "Phone", "serviceType": "Service Type",
+    "preferredDate": "Preferred Date", "preferredTime": "Preferred Time", "confirmBooking": "Send on WhatsApp",
+    "successMessage": "Request sent on WhatsApp!",
+    "maintenance": "Maintenance", "installation": "Installation", "emergencyRepair": "Emergency repair", "inspection": "Inspection / quote",
+    "yourName": "Your name", "yourEmail": "your@email.com"
+  },
+  "bio": {
+    "title": "About Mohammed Kadi", "subtitle": "Founder & Expert Electrician",
+    "paragraph1": "With over 10 years of experience in the electrical field, Mohammed Kadi founded Med Elec with a simple vision: professional-quality electrical solutions for everyone.",
+    "paragraph2": "Specialized in electrical installations, air conditioning and repair, he leads a passionate team that shares his values of quality, safety and innovation.",
+    "paragraph3": "Every project is an opportunity to demonstrate his technical expertise and commitment to customer satisfaction."
+  },
+  "testimonials": { "title": "Client Testimonials", "subtitle": "Our clients' trust is our best advertisement" },
+  "contact": {
+    "title": "Get in Touch", "subtitle": "A project, a breakdown, a question? Fast response guaranteed.",
+    "name": "Name", "email": "Email", "phone": "Phone", "message": "Message", "send": "Send on WhatsApp",
+    "yourName": "Your name", "yourEmail": "your@email.com", "yourMessage": "Describe your need...", "address": "Address",
+    "reason": "Reason for contact",
+    "reasons": { "electrical": "Electrical installation", "ac": "AC installation", "repair": "Repair / troubleshooting", "other": "Other" }
+  },
+  "hours": { "title": "Business Hours", "week": "Monday – Saturday: 8:00 – 18:00", "sun": "Sunday: closed", "emergency": "Emergency repairs: 24/7" },
+  "map": { "title": "Service Area", "zone": "Available all over Tunisia" },
+  "footer": { "rights": "All rights reserved", "tagline": "Professional electrical solutions for every project", "company": "Company", "about": "About Us", "certifications": "Certifications", "follow": "Follow Us", "privacy": "Privacy Policy", "terms": "Terms of Service" }
+}
