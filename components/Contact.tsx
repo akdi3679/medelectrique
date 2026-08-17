@@ -11,8 +11,13 @@ import VoiceRecorder from "./VoiceRecorder";
 export default function Contact() {
   const { t, language, isLoaded } = useLanguage();
   const { canSubmit, record, retryIn } = useRateLimit(3, 5 * 60 * 1000);
+  
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", reason: "electrical", message: "" });
   const [sending, setSending] = useState(false);
+  
+  // ✅ AJOUTÉ : States pour l'audio
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [audioName, setAudioName] = useState("");
 
   if (!isLoaded) return null;
   const isRTL = language === "ar";
@@ -33,31 +38,30 @@ export default function Contact() {
     const text = `🔔 *Nouveau contact Med Elec*\n\n*Nom:* ${formData.name}\n*Tél:* ${formData.phone}\n*Email:* ${formData.email}\n*Motif:* ${motif}\n\n*Message:*\n${formData.message}`;
 
     try {
-  // ✅ FormData au lieu de JSON
-  const formDataToSend = new FormData();
-  formDataToSend.append("text", text);
-  if (audioBlob) formDataToSend.append("audio", audioBlob, audioName);
+      // ✅ MODIFIÉ : FormData au lieu de JSON
+      const formDataToSend = new FormData();
+      formDataToSend.append("text", text);
+      if (audioBlob) formDataToSend.append("audio", audioBlob, audioName);
 
-  const res = await fetch("https://flat-mud-4ba6.kadiexperience3.workers.dev", {
-    method: "POST",
-    body: formDataToSend,
-    // Pas de Content-Type header : le navigateur le met automatiquement avec boundary
-  });
+      const res = await fetch("https://flat-mud-4ba6.kadiexperience3.workers.dev", {
+        method: "POST",
+        body: formDataToSend,
+      });
 
-  if (res.ok) {
-    record();
-    setFormData({ name: "", email: "", phone: "", reason: "electrical", message: "" });
-    setAudioBlob(null);
-    setAudioName("");
-    toast(t.contact?.sentOk || "Message envoyé !");
-  } else if (res.status === 429) {
-    toast("Trop de messages. Réessayez dans 5 min.", "error");
-  } else {
-    toast("Erreur — réessayez.", "error");
-  }
-} finally {
-  setSending(false);
-}
+      if (res.ok) {
+        record();
+        setFormData({ name: "", email: "", phone: "", reason: "electrical", message: "" });
+        setAudioBlob(null);
+        setAudioName("");
+        toast(t.contact?.sentOk || "Message envoyé !");
+      } else if (res.status === 429) {
+        toast("Trop de messages. Réessayez dans 5 min.", "error");
+      } else {
+        toast("Erreur — réessayez.", "error");
+      }
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -189,10 +193,15 @@ export default function Contact() {
                 required
               />
             </div>
+            
+            {/* ✅ AJOUTÉ : Voice Recorder */}
             <div>
-  <label className="block text-sm font-semibold mb-2 text-foreground">Message vocal (optionnel)</label>
-  <VoiceRecorder onAudioReady={(b, n) => { setAudioBlob(b); setAudioName(n); }} />
-</div>
+              <label className="block text-sm font-semibold mb-2 text-foreground">
+                {language === "ar" ? "رسالة صوتية (اختياري)" : language === "en" ? "Voice message (optional)" : "Message vocal (optionnel)"}
+              </label>
+              <VoiceRecorder onAudioReady={(b, n) => { setAudioBlob(b); setAudioName(n); }} />
+            </div>
+            
             <button
               type="submit"
               disabled={sending || retryIn > 0}
