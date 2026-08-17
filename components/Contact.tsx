@@ -6,6 +6,7 @@ import { coordonees } from "@/data/coordonees";
 import { useLanguage } from "@/lib/i18n-context";
 import { useRateLimit } from "@/hooks/useRateLimit";
 import { toast } from "./Toaster";
+import VoiceRecorder from "./VoiceRecorder";
 
 export default function Contact() {
   const { t, language, isLoaded } = useLanguage();
@@ -32,24 +33,31 @@ export default function Contact() {
     const text = `🔔 *Nouveau contact Med Elec*\n\n*Nom:* ${formData.name}\n*Tél:* ${formData.phone}\n*Email:* ${formData.email}\n*Motif:* ${motif}\n\n*Message:*\n${formData.message}`;
 
     try {
-      const res = await fetch("https://flat-mud-4ba6.kadiexperience3.workers.dev", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      });
+  // ✅ FormData au lieu de JSON
+  const formDataToSend = new FormData();
+  formDataToSend.append("text", text);
+  if (audioBlob) formDataToSend.append("audio", audioBlob, audioName);
 
-      if (res.ok) {
-        record();
-        setFormData({ name: "", email: "", phone: "", reason: "electrical", message: "" });
-        toast(t.contact?.sentOk || "Message envoyé !");
-      } else if (res.status === 429) {
-        toast("Trop de messages. Réessayez dans 5 min.", "error");
-      } else {
-        toast("Erreur — réessayez.", "error");
-      }
-    } finally {
-      setSending(false);
-    }
+  const res = await fetch("https://flat-mud-4ba6.kadiexperience3.workers.dev", {
+    method: "POST",
+    body: formDataToSend,
+    // Pas de Content-Type header : le navigateur le met automatiquement avec boundary
+  });
+
+  if (res.ok) {
+    record();
+    setFormData({ name: "", email: "", phone: "", reason: "electrical", message: "" });
+    setAudioBlob(null);
+    setAudioName("");
+    toast(t.contact?.sentOk || "Message envoyé !");
+  } else if (res.status === 429) {
+    toast("Trop de messages. Réessayez dans 5 min.", "error");
+  } else {
+    toast("Erreur — réessayez.", "error");
+  }
+} finally {
+  setSending(false);
+}
   };
 
   return (
@@ -181,6 +189,10 @@ export default function Contact() {
                 required
               />
             </div>
+            <div>
+  <label className="block text-sm font-semibold mb-2 text-foreground">Message vocal (optionnel)</label>
+  <VoiceRecorder onAudioReady={(b, n) => { setAudioBlob(b); setAudioName(n); }} />
+</div>
             <button
               type="submit"
               disabled={sending || retryIn > 0}

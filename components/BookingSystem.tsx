@@ -5,6 +5,7 @@ import { Clock, User, Phone, Calendar } from "lucide-react";
 import { useLanguage } from "@/lib/i18n-context";
 import { useRateLimit } from "@/hooks/useRateLimit";
 import { toast } from "./Toaster";
+import VoiceRecorder from "./VoiceRecorder";
 
 export default function BookingSystem() {
   const { t, language, isLoaded } = useLanguage();
@@ -17,6 +18,8 @@ export default function BookingSystem() {
     date: "",
     time: "",
   });
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+const [audioName, setAudioName] = useState("");
   const [sending, setSending] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
 
@@ -50,25 +53,30 @@ export default function BookingSystem() {
     const text = `🔔 *Réservation Med Elec*\n\n*Nom:* ${formData.name}\n*Tél:* ${formData.phone}\n*Service:* ${svc}${scheduleText}`;
 
     try {
-      const res = await fetch("https://flat-mud-4ba6.kadiexperience3.workers.dev", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      });
+  const formDataToSend = new FormData();
+  formDataToSend.append("text", text);
+  if (audioBlob) formDataToSend.append("audio", audioBlob, audioName);
 
-      if (res.ok) {
-        record();
-        setFormData({ name: "", email: "", phone: "", service: "maintenance", date: "", time: "" });
-        setShowSchedule(false);
-        toast(t.booking.successMessage);
-      } else if (res.status === 429) {
-        toast("Trop de demandes. Réessayez dans 5 min.", "error");
-      } else {
-        toast("Erreur — réessayez.", "error");
-      }
-    } finally {
-      setSending(false);
-    }
+  const res = await fetch("https://flat-mud-4ba6.kadiexperience3.workers.dev", {
+    method: "POST",
+    body: formDataToSend,
+  });
+
+  if (res.ok) {
+    record();
+    setFormData({ name: "", email: "", phone: "", service: "maintenance", date: "", time: "" });
+    setShowSchedule(false);
+    setAudioBlob(null);
+    setAudioName("");
+    toast(t.booking.successMessage);
+  } else if (res.status === 429) {
+    toast("Trop de demandes. Réessayez dans 5 min.", "error");
+  } else {
+    toast("Erreur — réessayez.", "error");
+  }
+} finally {
+  setSending(false);
+}
   };
 
   return (
@@ -177,7 +185,10 @@ export default function BookingSystem() {
                 </div>
               </div>
             )}
-
+<div>
+  <label className="block text-sm font-semibold mb-2 text-foreground">Message vocal (optionnel)</label>
+  <VoiceRecorder onAudioReady={(b, n) => { setAudioBlob(b); setAudioName(n); }} />
+</div>
             <button
               type="submit"
               disabled={sending || retryIn > 0}
