@@ -1,30 +1,49 @@
-import Link from "next/link";
-import { Zap } from "lucide-react";
-import { coordonees } from "@/data/coordonees";
+// app/not-found.tsx
+import Link from 'next/link';
+import { Home, ArrowLeft } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="text-center max-w-lg">
-        <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <Zap className="text-primary" size={32} />
-        </div>
-        <p className="text-7xl font-bold text-primary mb-4">404</p>
-        <h1 className="text-2xl font-semibold mb-2">
-          Page introuvable · Page not found · الصفحة غير موجودة
-        </h1>
-        <p className="text-foreground/70 mb-8">
-          Cette page n'existe pas ou a été déplacée. · This page doesn't exist or was moved. · هذه الصفحة غير موجودة أو تم نقلها.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/fr" className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-accent transition-colors font-semibold">
-            Accueil · Home · الرئيسية
-          </Link>
-          <a href={`https://wa.me/${coordonees.whatsapp}`} target="_blank" rel="noopener noreferrer" className="px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors font-semibold">
-            WhatsApp
-          </a>
-        </div>
-      </div>
-    </main>
+    <html lang="fr">
+      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
+        <main className="flex min-h-screen flex-col items-center justify-center px-4 py-20">
+          <div className="text-center">
+            <h1 className="text-[120px] font-bold leading-none text-primary md:text-[180px]">
+              404
+            </h1>
+            <p className="mt-4 text-4xl font-semibold text-accent">page introuvable</p>
+            <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-foreground/70">
+              Cette route n'existe pas ou a été déplacée.
+            </p>
+            
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
+              <Link
+                href="/fr"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3 font-semibold text-primary-foreground transition-all hover:bg-accent"
+              >
+                <Home size={18} />
+                Retour à l'accueil
+              </Link>
+              <Link
+                href="javascript:history.back()"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-primary px-8 py-3 font-semibold text-primary transition-colors hover:bg-primary/5"
+              >
+                <ArrowLeft size={18} />
+                Page précédente
+              </Link>
+            </div>
+
+            {/* Liens vers les 3 langues */}
+            <div className="mt-8 flex justify-center gap-4 text-sm">
+              <Link href="/fr" className="text-foreground/60 hover:text-primary">Français</Link>
+              <span className="text-foreground/30">•</span>
+              <Link href="/en" className="text-foreground/60 hover:text-primary">English</Link>
+              <span className="text-foreground/30">•</span>
+              <Link href="/ar" className="text-foreground/60 hover:text-primary">العربية</Link>
+            </div>
+          </div>
+        </main>
+      </body>
+    </html>
   );
 }

@@ -1,31 +1,67 @@
-"use client";
-import { useEffect } from "react";
-import { AlertTriangle } from "lucide-react";
+// app/error.tsx
+'use client';
 
-export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+import { useEffect } from 'react';
+import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   useEffect(() => {
-    console.error(error);
+    console.error('[Medelec Error]', {
+      message: error.message,
+      stack: error.stack,
+      digest: error.digest,
+    });
   }, [error]);
 
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="text-center max-w-lg">
-        <div className="w-16 h-16 bg-destructive/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <AlertTriangle className="text-destructive" size={32} />
+    <main className="flex min-h-screen flex-col items-center justify-center px-4 py-20">
+      <div className="text-center">
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-accent/10">
+          <AlertTriangle className="h-10 w-10 text-accent" />
         </div>
-        <h1 className="text-2xl font-semibold mb-2">
-          Une erreur est survenue · Something went wrong · حدث خطأ ما
+        
+        <h1 className="text-4xl font-bold text-foreground md:text-5xl">
+          Une erreur est survenue
         </h1>
-        <p className="text-foreground/70 mb-8">
-          Essayez de recharger la page. · Try reloading the page. · جرّب إعادة تحميل الصفحة.
+        <p className="mt-4 text-xl text-accent">oups, problème technique</p>
+        <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-foreground/70">
+          Quelque chose s'est mal passé. Notre équipe a été notifiée.
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button onClick={reset} className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-accent transition-colors font-semibold">
-            Réessayer · Retry · إعادة المحاولة
+        
+        {process.env.NODE_ENV === 'development' && (
+          <details className="mx-auto mt-6 max-w-md rounded-lg border border-border bg-card p-4 text-left">
+            <summary className="cursor-pointer font-semibold text-foreground">
+              Détails techniques
+            </summary>
+            <pre className="mt-3 overflow-x-auto text-xs text-foreground/70">
+              {error.message}
+              {'\n\n'}
+              {error.digest && `Digest: ${error.digest}`}
+            </pre>
+          </details>
+        )}
+        
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
+          <button
+            onClick={reset}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3 font-semibold text-primary-foreground transition-all hover:bg-accent"
+          >
+            <RefreshCw size={18} />
+            Réessayer
           </button>
-          <button onClick={() => (window.location.href = "/fr")} className="px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors font-semibold">
-            Accueil · Home · الرئيسية
-          </button>
+          <a 
+            href="/fr" 
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-primary px-8 py-3 font-semibold text-primary transition-colors hover:bg-primary/5"
+          >
+            <Home size={18} />
+            Accueil
+          </a>
         </div>
       </div>
     </main>

@@ -1,5 +1,34 @@
-import type { MetadataRoute } from "next";
+// app/robots.ts
+import { MetadataRoute } from 'next';
+
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.SITE_URL || "https://med-elec.vercel.app";
-  return { rules: { userAgent: "*", allow: "/" }, sitemap: `${base}/sitemap.xml` };
+  const baseUrl = 'https://medelectrique.vercel.app';
+  
+  return {
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/api/', '/_next/', '/locales/'],
+      },
+      {
+        userAgent: 'GPTBot',
+        disallow: '/',
+      },
+      {
+        userAgent: 'ChatGPT-User',
+        disallow: '/',
+      },
+      {
+        userAgent: 'Google-Extended',
+        disallow: '/',
+      },
+      {
+        userAgent: 'CCBot',
+        disallow: '/',
+      },
+    ],
+    sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
+  };
 }
