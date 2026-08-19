@@ -24,8 +24,10 @@ export function BrandMediaProvider({ children }: { children: ReactNode }) {
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (d && typeof d === 'object') {
-          cache = { ...empty, ...d };
-          setData(cache); // ✅ Maintenant cache est de type BrandMedia (pas null)
+          // ⭐ Variable locale typée explicitement comme BrandMedia
+          const newData: BrandMedia = { ...empty, ...d };
+          cache = newData;
+          setData(newData); // ✅ Maintenant TypeScript sait que c'est BrandMedia (pas null)
         }
       })
       .catch(() => {});
