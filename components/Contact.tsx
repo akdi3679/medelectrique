@@ -111,8 +111,16 @@ export default function Contact() {
       const formDataToSend = new FormData();
       formDataToSend.append("text", text);
 if (audioBlob) {
-  formDataToSend.append("audio", audioBlob, audioName);
-  formDataToSend.append("audioDuration", String(audioDuration));
+  formDataToSend.append(
+    "audio",
+    audioBlob,
+    audioName
+  );
+
+  formDataToSend.append(
+    "audioDuration",
+    String(audioDuration)
+  );
 }
       const res = await fetch(process.env.NEXT_PUBLIC_WORKER_URL || "https://flat-mud-4ba6.kadiexperience3.workers.dev", {
         method: "POST",
@@ -315,15 +323,18 @@ if (audioBlob) {
                 {hasText && <span className="text-xs text-foreground/60"> ({lang === "fr" ? "effacez le texte" : lang === "ar" ? "امسح النص" : "clear text"})</span>}
               </label>
               <VoiceRecorder 
-  onAudioReady={(b, n, d) => { 
-    setAudioBlob(b); 
-    setAudioName(n);
-    setAudioDuration(d || 0);
+  onAudioReady={(b, n, d) => {
+  setAudioBlob(b);
+  setAudioName(n);
+  setAudioDuration(d || 0);
 
-    if (b && errors.message) {
-      setErrors({ ...errors, message: "" });
-    }
-  }} 
+  if (b && errors.message) {
+    setErrors({
+      ...errors,
+      message: "",
+    });
+  }
+}}
   disabled={hasText}
 />
             </div>
