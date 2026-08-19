@@ -4,9 +4,6 @@ import { Inter, JetBrains_Mono, Noto_Kufi_Arabic } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const arabic = Noto_Sans_Arabic({ subsets: ["arabic"], variable: "--font-arabic" });
-const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 // ⭐ URL de base du site (à changer quand le domaine sera connecté)
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://medelectrique.vercel.app";
