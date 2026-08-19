@@ -2,11 +2,12 @@
 import { useLanguage } from "@/lib/i18n-context";
 import { catalogue as catalogueItems, catalogueStrings } from "@/data/catalogue";
 import { coordonees } from "@/data/coordonees";
-import { useBrandMedia } from "@/lib/brand-media";
+import { useFolderMedia } from "@/lib/useFolderMedia";
 
 export default function Catalogue() {
   const { language, isLoaded } = useLanguage();
-  const { catalogue: mediaCatalogue } = useBrandMedia();
+  // ⭐ ⚠️ Adapte le nom du folder selon Cloudinary
+  const { images: mediaCatalogue } = useFolderMedia('catalogue');
   
   if (!isLoaded) return null;
   const lang = language as "fr" | "en" | "ar";
@@ -22,7 +23,6 @@ export default function Catalogue() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {catalogueItems.map((item, i) => {
-            // ⭐ URL réelle depuis Cloudinary (par filename)
             const imgUrl = mediaCatalogue[item.id];
             const wa = encodeURIComponent(`Bonjour Med Elec — ${catalogueStrings.cta[lang]} : ${item.title[lang]}`);
             
@@ -32,7 +32,6 @@ export default function Catalogue() {
                 className="group relative overflow-hidden rounded-xl aspect-[4/5] animate-fade-in-up" 
                 style={{ animationDelay: `${i * 80}ms` }}
               >
-                {/* ⭐ Image réelle ou placeholder */}
                 {imgUrl ? (
                   <img
                     src={imgUrl}
@@ -44,10 +43,8 @@ export default function Catalogue() {
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
                 )}
                 
-                {/* Overlay sombre permanent en bas */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                 
-                {/* Contenu texte (caché par défaut, visible au hover) */}
                 <div className="absolute inset-0 flex flex-col justify-end p-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <h3 className="text-2xl font-semibold mb-3">{item.title[lang]}</h3>
                   <p className="text-sm mb-4 leading-relaxed">{item.desire[lang]}</p>
@@ -61,7 +58,6 @@ export default function Catalogue() {
                   </a>
                 </div>
 
-                {/* Titre visible sans hover (en bas) */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white group-hover:opacity-0 transition-opacity duration-300">
                   <h3 className="text-2xl font-semibold">{item.title[lang]}</h3>
                 </div>

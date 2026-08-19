@@ -16,12 +16,10 @@ import Process from "./Process";
 import Catalogue from "./Catalogue";
 import Faq from "./Faq";
 import { Toaster } from "@/components/Toaster";
-import { BrandMediaProvider } from '@/lib/brand-media';
 
 export default function Home({ lang }: { lang: Language }) {
   return (
     <LanguageProvider initialLanguage={lang}>
-            <BrandMediaProvider>
 
       <main className="min-h-screen bg-background">
         <Navigation />
@@ -40,7 +38,6 @@ export default function Home({ lang }: { lang: Language }) {
         <Toaster /> 
         <CallButtons />
       </main>
-            </BrandMediaProvider>
 
     </LanguageProvider>
   );

@@ -3,14 +3,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/lib/i18n-context";
-import { useBrandMedia } from "@/lib/brand-media"; // ✅ Import ajouté
+import { useFolderMedia } from "@/lib/useFolderMedia";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { t, language, isLoaded } = useLanguage();
-  const { siteImg } = useBrandMedia(); // ✅ Utilisation du hook
+  const { images: siteImg } = useFolderMedia('site-img');
 
   useEffect(() => setIsMounted(true), []);
   if (!isMounted || !isLoaded) return null;
@@ -21,7 +21,6 @@ export default function Navigation() {
     <nav className={`fixed top-0 w-full bg-background/80 backdrop-blur-md z-50 border-b border-border ${isRTL ? "rtl" : "ltr"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo image depuis Cloudinary avec fallback */}
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
             {siteImg.favicon ? (
               <img
@@ -39,6 +38,7 @@ export default function Navigation() {
             <span className="font-semibold text-lg hidden sm:inline">Med Elec</span>
           </Link>
 
+        
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
             <Link href="#services" className="text-foreground/70 hover:text-foreground transition-colors text-sm font-medium">{t.nav.services}</Link>

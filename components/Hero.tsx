@@ -1,15 +1,17 @@
 "use client";
 import { ArrowRight, Phone, Calendar } from "lucide-react";
 import { useLanguage } from "@/lib/i18n-context";
-import { useBrandMedia } from "@/lib/brand-media";
+import { useFolderMedia } from "@/lib/useFolderMedia";
 
 export default function Hero() {
   const { t, language, isLoaded } = useLanguage();
-  const { siteImg } = useBrandMedia();
+  // ⭐ ⚠️ Adapte le nom du folder selon Cloudinary
+  const { images: siteImg } = useFolderMedia('site-img');
+  
   if (!isLoaded) return null;
   const isRTL = language === "ar";
 
-  const heroUrl = siteImg.hero; // ← URL réelle depuis Cloudinary
+  const heroUrl = siteImg.hero;
 
   return (
     <section className={`pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-background to-muted ${isRTL ? "rtl" : "ltr"}`}>
@@ -41,7 +43,6 @@ export default function Hero() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                // ⭐ Placeholder pendant le chargement / si image manquante
                 <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20" />
               )}
             </div>
