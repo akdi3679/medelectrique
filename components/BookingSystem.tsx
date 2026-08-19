@@ -179,7 +179,7 @@ export default function BookingSystem() {
         </div>
 
         <div className="bg-card border border-border rounded-2xl p-8 animate-fade-in-up">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} noValidate className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold mb-2 flex items-center gap-2 text-foreground">
@@ -301,7 +301,6 @@ export default function BookingSystem() {
                 className={`w-full px-4 py-3 bg-background text-foreground border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all resize-none ${
                   errors.notes ? "border-red-500" : "border-border"
                 } ${hasAudio ? "opacity-50 cursor-not-allowed" : ""}`}
-                required={!hasAudio}
               />
               {errors.notes && (
                 <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
