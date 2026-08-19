@@ -4,18 +4,39 @@ import { Mic, Square, Play, Pause, Trash2, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/lib/i18n-context";
 
 interface Props {
-onAudioReady: (
-  blob: Blob | null,
-  fileName: string,
-  durationMs?: number
-) => void;
-  disabled?: boolean; // ← Pour bloquer quand texte est tapé
+  onAudioReady: (
+    blob: Blob | null,
+    fileName: string,
+    durationMs?: number
+  ) => void;
+
+  disabled?: boolean;
 }
 
 export default function VoiceRecorder({ onAudioReady, disabled = false }: Props) {
   const { language } = useLanguage();
+  
   const lang = language as "fr" | "en" | "ar";
+const finishRecording = () => {
+  streamRef.current
+    ?.getTracks()
+    .forEach((track) => track.stop());
 
+  streamRef.current = null;
+
+  if (audioContextRef.current) {
+    audioContextRef.current.close();
+    audioContextRef.current = null;
+  }
+
+  if (timerRef.current) {
+    clearInterval(timerRef.current);
+    timerRef.current = null;
+  }
+
+  setIsAnalyzing(false);
+  setSilenceCountdown(null);
+};
   const strings = {
     fr: {
       record: "Enregistrer un message vocal",
@@ -151,18 +172,36 @@ export default function VoiceRecorder({ onAudioReady, disabled = false }: Props)
       source.connect(analyserRef.current);
       setIsAnalyzing(true);
 
-      rec.ondataavailable = (e) => e.data.size > 0 && chunksRef.current.push(e.data);
-     rec.onstop = () => {
-  const blob = new Blob(chunksRef.current, {
-    type: rec.mimeType || "audio/webm",
+     rec.ondataavailable = (e) => {
+  if (e.data && e.data.size > 0) {
+    chunksRef.current.push(e.data);
+  }
+};
+
+rec.onstop = () => {
+  const mimeType =
+    rec.mimeType || "audio/webm";
+
+  const blob = new Blob(
+    chunksRef.current,
+    { type: mimeType }
+  );
+
+  console.log("Recorded audio:", {
+    mimeType,
+    size: blob.size,
+    chunks: chunksRef.current.length,
   });
 
   const url = URL.createObjectURL(blob);
 
-  const audio = new Audio(url);
+  const audio = new Audio();
 
   audio.onloadedmetadata = () => {
-    const actualDuration = Math.round(audio.duration * 1000);
+    const actualDuration =
+      Math.round(audio.duration * 1000);
+
+    console.log("Audio duration:", actualDuration);
 
     setAudioBlob(blob);
     setAudioUrl(url);
@@ -172,9 +211,17 @@ export default function VoiceRecorder({ onAudioReady, disabled = false }: Props)
       `voice-${Date.now()}.webm`,
       actualDuration
     );
+
+    finishRecording();
   };
 
   audio.onerror = () => {
+    console.error(
+      "Cannot read recorded audio"
+    );
+
+    // Still return the blob if browser
+    // cannot read metadata.
     setAudioBlob(blob);
     setAudioUrl(url);
 
@@ -183,17 +230,11 @@ export default function VoiceRecorder({ onAudioReady, disabled = false }: Props)
       `voice-${Date.now()}.webm`,
       duration * 1000
     );
+
+    finishRecording();
   };
 
-  stream.getTracks().forEach((t) => t.stop());
-
-  if (audioContextRef.current) {
-    audioContextRef.current.close();
-    audioContextRef.current = null;
-  }
-
-  setIsAnalyzing(false);
-  setSilenceCountdown(null);
+  audio.src = url;
 };
 
       rec.start();
