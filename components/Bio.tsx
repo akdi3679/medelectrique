@@ -2,23 +2,24 @@
 import { useLanguage } from "@/lib/i18n-context";
 import { cdn } from "@/lib/cloudinary";
 import { brandImages } from "@/data/media";
+import { useMediaImage } from "@/lib/useMedia";
 
 export default function Bio() {
   const { t, language, isLoaded } = useLanguage();
   if (!isLoaded) return null;
   const isRTL = language === "ar";
+const bioUrl = useMediaImage('bio'); 
 
   return (
     <section id="bio" className={`py-20 px-4 sm:px-6 lg:px-8 bg-background ${isRTL ? "rtl" : "ltr"}`}>
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
         <div className="animate-fade-in-up">
           <div className="aspect-[4/5] rounded-2xl overflow-hidden">
-            <img
-              src={cdn(brandImages.bio.publicId, { w: 900, ar: '4:5' })}
-              alt={t.bio?.imageAlt || ""}
-              loading="lazy"
-              className="w-full h-full object-cover"
-            />
+             {bioUrl ? (
+    <img src={bioUrl} alt={t.bio.imageAlt} fetchPriority="high" className="w-full h-full object-cover" />
+  ) : (
+    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20" />
+  )}
           </div>
         </div>
         <div className="animate-fade-in-up" style={{ animationDelay: "100ms" }}>
