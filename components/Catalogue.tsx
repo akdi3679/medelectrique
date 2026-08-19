@@ -8,37 +8,32 @@ import { coordonees } from "@/data/coordonees";
 import { useMediaImages } from "@/lib/useMedia";
 import Lightbox from "./Lightbox";
 
-// ⭐ Objets vides STABLES (même référence à chaque render)
-const EMPTY_OBJ = {};
-const EMPTY_CATEGORIES: Record<string, string> = {};
-const EMPTY_ARRAY: any[] = [];
+// ⭐ Constantes stables (même référence entre renders)
+const EMPTY_IMAGES: Record<string, string> = {};
+const EMPTY_ARRAY: { name: string; url: string }[] = [];
 
 export default function Catalogue() {
+  // ────────────────────────────────────────
+  // ⭐ TOUS LES HOOKS EN HAUT — SANS EXCEPTION
+  // ────────────────────────────────────────
   const { t, language, isLoaded } = useLanguage();
   const images = useMediaImages('catalogue');
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | 'all'>('all');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  // ⭐ Memoize les textes pour éviter la boucle
+  // ⭐ Memoize textes (toujours appelés, même si pas loaded)
   const catalogueText = useMemo(() => {
-    return (t && t.catalogue && typeof t.catalogue === 'object') ? t.catalogue : EMPTY_OBJ;
+    if (!t || !t.catalogue || typeof t.catalogue !== 'object') return {};
+    return t.catalogue as Record<string, any>;
   }, [t]);
 
   const categoriesText = useMemo(() => {
-    const cats = (catalogueText as any).categories;
-    return (cats && typeof cats === 'object') ? cats : EMPTY_CATEGORIES;
+    const cats = catalogueText.categories;
+    if (!cats || typeof cats !== 'object') return {} as Record<string, string>;
+    return cats as Record<string, string>;
   }, [catalogueText]);
 
-  const titleText = (catalogueText as any).title ?? "";
-  const subtitleText = (catalogueText as any).subtitle ?? "";
-  const ctaText = (catalogueText as any).cta ?? "";
-  const allLabel = categoriesText.all ?? (language === "ar" ? "الكل" : language === "en" ? "All" : "Tous");
-
-  if (!isLoaded) return null;
-  const lang = language as "fr" | "en" | "ar";
-  const isRTL = lang === "ar";
-
-  // ⭐ Grouper par catégorie
+  // ⭐ Grouper par catégorie (toujours appelé)
   const grouped = useMemo(() => {
     const groups: Record<string, { name: string; url: string }[]> = {};
     if (!images || typeof images !== 'object') return groups;
@@ -62,6 +57,7 @@ export default function Catalogue() {
     return groups;
   }, [images]);
 
+  // ⭐ Images affichées (toujours appelé)
   const displayedImages = useMemo(() => {
     if (selectedCategory === 'all') {
       return categoryOrder.flatMap((cat) => grouped[cat] || EMPTY_ARRAY);
@@ -69,9 +65,23 @@ export default function Catalogue() {
     return grouped[selectedCategory] || EMPTY_ARRAY;
   }, [selectedCategory, grouped]);
 
+  // ⭐ Compteur total (toujours appelé)
   const totalCount = useMemo(() => {
     return Object.values(grouped).reduce((sum, arr) => sum + arr.length, 0);
   }, [grouped]);
+
+  // ────────────────────────────────────────
+  // ⭐ RETURN CONDITIONNEL APRÈS TOUS LES HOOKS
+  // ────────────────────────────────────────
+  if (!isLoaded) return null;
+
+  const lang = language as "fr" | "en" | "ar";
+  const isRTL = lang === "ar";
+  
+  const titleText = (catalogueText.title as string) ?? "";
+  const subtitleText = (catalogueText.subtitle as string) ?? "";
+  const ctaText = (catalogueText.cta as string) ?? "";
+  const allLabel = categoriesText.all ?? (lang === "ar" ? "الكل" : lang === "en" ? "All" : "Tous");
 
   return (
     <section id="catalogue" className={`py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 ${isRTL ? "rtl" : "ltr"}`}>
@@ -125,9 +135,8 @@ export default function Catalogue() {
         {displayedImages.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {displayedImages.map((img, i) => {
-              const imgCategory = img.name.lastIndexOf('-') > 0 
-                ? img.name.slice(0, img.name.lastIndexOf('-')) 
-                : img.name;
+              const lastDash = img.name.lastIndexOf('-');
+              const imgCategory = lastDash > 0 ? img.name.slice(0, lastDash) : img.name;
               const imgCategoryLabel = categoriesText[imgCategory] || imgCategory;
               const wa = encodeURIComponent(`Bonjour Med Elec — ${ctaText} : ${imgCategoryLabel}`);
               
