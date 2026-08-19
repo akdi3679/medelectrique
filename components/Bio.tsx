@@ -15,18 +15,28 @@ export default function Bio() {
           <div className="aspect-[4/5] rounded-2xl overflow-hidden">
             <img
               src={cdn(brandImages.bio.publicId, { w: 900, ar: '4:5' })}
-              alt={t.bio?.imageAlt || "Mohammed Kadi"}
+              alt={t.bio?.imageAlt || ""}
               loading="lazy"
               className="w-full h-full object-cover"
             />
           </div>
         </div>
         <div className="animate-fade-in-up" style={{ animationDelay: "100ms" }}>
-          <p className="text-primary font-semibold mb-2 tracking-wide uppercase text-sm">{t.bio?.subtitle || ""}</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">{t.bio?.title || ""}</h2>
-          <p className="text-lg text-foreground/70 leading-relaxed mb-4">{t.bio?.paragraph1 || ""}</p>
-          <p className="text-lg text-foreground/70 leading-relaxed mb-4">{t.bio?.paragraph2 || ""}</p>
-          <p className="text-lg text-foreground/70 leading-relaxed">{t.bio?.paragraph3 || ""}</p>
+          <p className="text-primary font-semibold mb-2 tracking-wide uppercase text-sm">
+            {t.bio?.subtitle || ""}
+          </p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
+            {t.bio?.title || ""}
+          </h2>
+          <p className="text-lg text-foreground/70 leading-relaxed mb-4">
+            {t.bio?.paragraph1 || ""}
+          </p>
+          <p className="text-lg text-foreground/70 leading-relaxed mb-4">
+            {t.bio?.paragraph2 || ""}
+          </p>
+          <p className="text-lg text-foreground/70 leading-relaxed">
+            {t.bio?.paragraph3 || ""}
+          </p>
         </div>
       </div>
     </section>

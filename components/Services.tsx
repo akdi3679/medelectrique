@@ -1,13 +1,13 @@
 "use client";
-import { Zap, AirVent, Wrench } from "lucide-react";
+import { Zap, AirVent, Wrench, type LucideIcon } from "lucide-react";
 import { useLanguage } from "@/lib/i18n-context";
-import { services as servicesData } from "@/data/services";
+import { serviceIds, type ServiceId } from "@/data/services";
 
-// ⭐ Map des icônes (structure seulement, pas de texte)
-const iconMap = {
-  zap: Zap,
-  airvent: AirVent,
-  wrench: Wrench,
+// ⭐ Map des icônes — logique UI dans le composant, pas dans data
+const serviceIcons: Record<ServiceId, LucideIcon> = {
+  electrical: Zap,
+  ac: AirVent,
+  repair: Wrench,
 };
 
 export default function Services() {
@@ -24,13 +24,13 @@ export default function Services() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {servicesData.map((service, index) => {
-            const Icon = iconMap[service.icon];
-            const serviceText = t.services[service.id as keyof typeof t.services];
+          {serviceIds.map((serviceId, index) => {
+            const Icon = serviceIcons[serviceId];
+            const serviceText = t.services[serviceId as keyof typeof t.services];
             
             return (
               <div 
-                key={service.id} 
+                key={serviceId} 
                 className="group p-8 bg-card border border-border rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-300 animate-fade-in-up" 
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -38,7 +38,7 @@ export default function Services() {
                   <Icon className="text-primary" size={24} />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">
-                  {serviceText?.title || service.id}
+                  {serviceText?.title || serviceId}
                 </h3>
                 <p className="text-foreground/70 leading-relaxed">
                   {serviceText?.desc || ""}
