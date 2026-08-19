@@ -71,6 +71,10 @@ export default function VoiceRecorder({ onAudioReady, disabled = false }: Props)
   const [displayDuration, setDisplayDuration] = useState(0); // en secondes
   const [error, setError] = useState<string | null>(null);
   const [silenceDetected, setSilenceDetected] = useState(false);
+const gainNodeRef = useRef<GainNode | null>(null);
+
+// ⭐ AJOUTER une constante pour le niveau d'amplification
+const AUDIO_GAIN = 2.5; // 2.5x plus fort (augmente à 3.0 si encore trop faible)
 
   // ────────────────────────────────────────────
   // Refs (pas de re-render)
@@ -130,40 +134,41 @@ const getMimeType = useCallback((): string => {
   // ────────────────────────────────────────────
 
   const cleanupAll = useCallback(() => {
-    // 1. Timer
-    if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-      timerIntervalRef.current = null;
-    }
+  if (timerIntervalRef.current) {
+    clearInterval(timerIntervalRef.current);
+    timerIntervalRef.current = null;
+  }
 
-    // 2. Silence detection
-    if (silenceCheckIntervalRef.current) {
-      clearInterval(silenceCheckIntervalRef.current);
-      silenceCheckIntervalRef.current = null;
-    }
-    if (silenceTimeoutRef.current) {
-      clearTimeout(silenceTimeoutRef.current);
-      silenceTimeoutRef.current = null;
-    }
+  if (silenceCheckIntervalRef.current) {
+    clearInterval(silenceCheckIntervalRef.current);
+    silenceCheckIntervalRef.current = null;
+  }
+  if (silenceTimeoutRef.current) {
+    clearTimeout(silenceTimeoutRef.current);
+    silenceTimeoutRef.current = null;
+  }
 
-    // 3. AudioContext
-    if (audioContextRef.current) {
-      audioContextRef.current.close().catch(() => {});
-      audioContextRef.current = null;
-      analyserRef.current = null;
-    }
+  // ⭐ Disconnect le gainNode
+  if (gainNodeRef.current) {
+    gainNodeRef.current.disconnect();
+    gainNodeRef.current = null;
+  }
 
-    // 4. Stream
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-      streamRef.current = null;
-    }
+  if (audioContextRef.current) {
+    audioContextRef.current.close().catch(() => {});
+    audioContextRef.current = null;
+    analyserRef.current = null;
+  }
 
-    // 5. Flags
-    isStoppingRef.current = false;
-    setIsRecording(false);
-    setSilenceDetected(false);
-  }, []);
+  if (streamRef.current) {
+    streamRef.current.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+  }
+
+  isStoppingRef.current = false;
+  setIsRecording(false);
+  setSilenceDetected(false);
+}, []);
 
   // ────────────────────────────────────────────
   // Cleanup au démontage
@@ -261,106 +266,121 @@ const getMimeType = useCallback((): string => {
   // START RECORDING
   // ────────────────────────────────────────────
 
-  const startRecording = useCallback(async () => {
-    if (disabled || isRecording || isStoppingRef.current) return;
 
-    setError(null);
-    setSilenceDetected(false);
+// ────────────────────────────────────────────
+// ⭐ startRecording avec amplification
+// ────────────────────────────────────────────
 
-    try {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error("Microphone API unavailable");
+const startRecording = useCallback(async () => {
+  if (disabled || isRecording || isStoppingRef.current) return;
+
+  setError(null);
+  setSilenceDetected(false);
+
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error("Microphone API unavailable");
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: false, // ⭐ Désactivé pour contrôler nous-mêmes le gain
+      },
+    });
+
+    streamRef.current = stream;
+
+    // ⭐ Setup AudioContext avec amplification
+    audioContextRef.current = new AudioContext();
+    const source = audioContextRef.current.createMediaStreamSource(stream);
+
+    // ⭐ GainNode pour amplifier le signal (résout le volume faible)
+    const gainNode = audioContextRef.current.createGain();
+    gainNode.gain.value = AUDIO_GAIN; // 2.5x plus fort
+    gainNodeRef.current = gainNode;
+
+    // Pour détection de silence (sur le signal original)
+    analyserRef.current = audioContextRef.current.createAnalyser();
+    analyserRef.current.fftSize = 512;
+    source.connect(analyserRef.current);
+
+    // ⭐ Pour enregistrement : source → gain → destination (stream amplifié)
+    const destination = audioContextRef.current.createMediaStreamDestination();
+    source.connect(gainNode);
+    gainNode.connect(destination);
+
+    // ⭐ Le stream amplifié pour MediaRecorder
+    const amplifiedStream = destination.stream;
+
+    // Setup MediaRecorder sur le stream AMPLIFIÉ
+    const mimeType = getMimeType();
+    const recorder = mimeType
+      ? new MediaRecorder(amplifiedStream, { mimeType })
+      : new MediaRecorder(amplifiedStream);
+
+    recorderRef.current = recorder;
+    chunksRef.current = [];
+
+    recorder.ondataavailable = (event) => {
+      if (event.data && event.data.size > 0) {
+        chunksRef.current.push(event.data);
       }
-
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-        },
-      });
-
-      streamRef.current = stream;
-
-      // ⭐ Setup AudioContext pour détection de silence
-      audioContextRef.current = new AudioContext();
-      const source = audioContextRef.current.createMediaStreamSource(stream);
-      analyserRef.current = audioContextRef.current.createAnalyser();
-      analyserRef.current.fftSize = 512;
-      source.connect(analyserRef.current);
-
-      // ⭐ Setup MediaRecorder
-      const mimeType = getMimeType();
-      const recorder = mimeType
-        ? new MediaRecorder(stream, { mimeType })
-        : new MediaRecorder(stream);
-
-      recorderRef.current = recorder;
-      chunksRef.current = [];
-
-      recorder.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          chunksRef.current.push(event.data);
-        }
-      };
+    };
 
     recorder.onstop = () => {
-  const finalMime = recorder.mimeType || mimeType || "audio/mp4";
-  const blob = new Blob(chunksRef.current, { type: finalMime });
+      const finalMime = recorder.mimeType || mimeType || "audio/mp4";
+      const blob = new Blob(chunksRef.current, { type: finalMime });
 
-  console.log('[VoiceRecorder] Final blob:', {
-    size: blob.size,
-    type: blob.type,
-    chunks: chunksRef.current.length,
-    durationMs: Date.now() - startTimeRef.current,
-  });
+      console.log('[VoiceRecorder] Final blob (amplified):', {
+        size: blob.size,
+        type: blob.type,
+        chunks: chunksRef.current.length,
+        durationMs: Date.now() - startTimeRef.current,
+        gain: AUDIO_GAIN,
+      });
 
-  if (blob.size === 0) {
-    console.error('[VoiceRecorder] ❌ BLOB EST VIDE');
-    setError(t.noMic);
-    cleanupAll();
-    return;
-  }
-
-  const url = URL.createObjectURL(blob);
-  setAudioBlob(blob);
-  setAudioUrl(url);
-  setDisplayDuration(Math.floor((Date.now() - startTimeRef.current) / 1000));
-
-  // ⭐ Extension basée sur le MIME réel
-  let extension = "webm";
-  if (finalMime.includes("mp4")) {
-    extension = "m4a"; // ⭐ MP4 audio = .m4a
-  } else if (finalMime.includes("aac")) {
-    extension = "aac";
-  } else if (finalMime.includes("mpeg")) {
-    extension = "mp3";
-  }
-
-  const filename = `voice-${Date.now()}.${extension}`;
-  onAudioReady(blob, filename, Date.now() - startTimeRef.current);
-
-  cleanupAll();
-};
-      recorder.onerror = () => {
+      if (blob.size === 0) {
+        console.error('[VoiceRecorder] ❌ BLOB EST VIDE');
         setError(t.noMic);
         cleanupAll();
-      };
+        return;
+      }
 
-      // ⭐ Démarre tout
-      recorder.start(250); // Chunks toutes les 250ms
-      setIsRecording(true);
-      isStoppingRef.current = false;
-      startTimer();
-      startSilenceDetection();
+      const url = URL.createObjectURL(blob);
+      setAudioBlob(blob);
+      setAudioUrl(url);
+      setDisplayDuration(Math.floor((Date.now() - startTimeRef.current) / 1000));
 
-    } catch (err) {
-      console.error("Microphone error:", err);
+      let extension = "webm";
+      if (finalMime.includes("mp4")) extension = "m4a";
+      else if (finalMime.includes("aac")) extension = "aac";
+      else if (finalMime.includes("mpeg")) extension = "mp3";
+
+      const filename = `voice-${Date.now()}.${extension}`;
+      onAudioReady(blob, filename, Date.now() - startTimeRef.current);
+
+      cleanupAll();
+    };
+
+    recorder.onerror = () => {
       setError(t.noMic);
       cleanupAll();
-    }
-  }, [disabled, isRecording, getMimeType, onAudioReady, startTimer, startSilenceDetection, cleanupAll, t.noMic]);
+    };
 
+    recorder.start(250);
+    setIsRecording(true);
+    isStoppingRef.current = false;
+    startTimer();
+    startSilenceDetection();
+
+  } catch (err) {
+    console.error("Microphone error:", err);
+    setError(t.noMic);
+    cleanupAll();
+  }
+}, [disabled, isRecording, getMimeType, onAudioReady, startTimer, startSilenceDetection, cleanupAll, t.noMic]);
   // ────────────────────────────────────────────
   // ⭐ STOP RECORDING (manuel ou auto)
   // ────────────────────────────────────────────
