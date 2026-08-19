@@ -98,20 +98,26 @@ export default function VoiceRecorder({ onAudioReady, disabled = false }: Props)
   // Helpers
   // ────────────────────────────────────────────
 
-  const getMimeType = useCallback((): string => {
-    const types = [
-      "audio/webm;codecs=opus",
-      "audio/webm",
-      "audio/ogg;codecs=opus",
-      "audio/mp4",
-    ];
-    for (const type of types) {
-      if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(type)) {
-        return type;
-      }
+
+const getMimeType = useCallback((): string => {
+  // ⭐ MP4/AAC est le mieux supporté par FluffyChat
+  const types = [
+    "audio/mp4",
+    "audio/aac", 
+    "audio/mpeg", // MP3 fallback
+  ];
+  
+  for (const type of types) {
+    if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(type)) {
+      console.log('[VoiceRecorder] Selected MIME:', type);
+      return type;
     }
-    return "";
-  }, []);
+  }
+  
+  // ⚠️ Fallback si rien ne marche (rare)
+  console.warn('[VoiceRecorder] No preferred MIME supported, using default');
+  return "";
+}, []);
 
   const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -298,11 +304,11 @@ export default function VoiceRecorder({ onAudioReady, disabled = false }: Props)
         }
       };
 
-      recorder.onstop = () => {
-        const finalMime = recorder.mimeType || mimeType || "audio/webm";
+    recorder.onstop = () => {
+  const finalMime = recorder.mimeType || mimeType || "audio/mp4";
   const blob = new Blob(chunksRef.current, { type: finalMime });
 
-        console.log('[VoiceRecorder] Final blob:', {
+  console.log('[VoiceRecorder] Final blob:', {
     size: blob.size,
     type: blob.type,
     chunks: chunksRef.current.length,
@@ -315,30 +321,27 @@ export default function VoiceRecorder({ onAudioReady, disabled = false }: Props)
     cleanupAll();
     return;
   }
-   if (blob.size < 1000) {
-    console.error('[VoiceRecorder] ⚠️ Blob trop petit, probablement corrompu');
+
+  const url = URL.createObjectURL(blob);
+  setAudioBlob(blob);
+  setAudioUrl(url);
+  setDisplayDuration(Math.floor((Date.now() - startTimeRef.current) / 1000));
+
+  // ⭐ Extension basée sur le MIME réel
+  let extension = "webm";
+  if (finalMime.includes("mp4")) {
+    extension = "m4a"; // ⭐ MP4 audio = .m4a
+  } else if (finalMime.includes("aac")) {
+    extension = "aac";
+  } else if (finalMime.includes("mpeg")) {
+    extension = "mp3";
   }
 
-        // ⭐ Durée réelle calculée depuis startTime
-        const actualDurationMs = Date.now() - startTimeRef.current;
+  const filename = `voice-${Date.now()}.${extension}`;
+  onAudioReady(blob, filename, Date.now() - startTimeRef.current);
 
-        const url = URL.createObjectURL(blob);
-        setAudioBlob(blob);
-        setAudioUrl(url);
-        setDisplayDuration(Math.floor(actualDurationMs / 1000));
-
-        const extension = finalMime.includes("ogg")
-          ? "ogg"
-          : finalMime.includes("mp4")
-          ? "mp4"
-          : "webm";
-
-        const filename = `voice-${Date.now()}.${extension}`;
-        onAudioReady(blob, filename, actualDurationMs);
-
-        cleanupAll();
-      };
-
+  cleanupAll();
+};
       recorder.onerror = () => {
         setError(t.noMic);
         cleanupAll();
