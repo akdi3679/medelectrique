@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useLanguage } from "@/lib/i18n-context";
 import { catalogue as catalogueItems, categoryOrder, type CategoryId } from "@/data/catalogue";
 import { coordonees } from "@/data/coordonees";
-import { useMediaImage } from "@/lib/useMedia";
+import { useMediaImages } from "@/lib/useMedia";
 
 export default function Catalogue() {
   const { t, language, isLoaded } = useLanguage();
