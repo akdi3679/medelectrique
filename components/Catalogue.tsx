@@ -18,12 +18,24 @@ export default function Catalogue() {
   const lang = language as "fr" | "en" | "ar";
   const isRTL = lang === "ar";
 
-  // ⭐ Grouper les images par catégorie (préfixe avant le dernier "-")
+  // ⭐ Gardes de sécurité pour les textes
+  const catalogueText = t?.catalogue ?? {};
+  const categoriesText = (catalogueText.categories ?? {}) as Record<string, string>;
+  const titleText = catalogueText.title ?? "";
+  const subtitleText = catalogueText.subtitle ?? "";
+  const ctaText = catalogueText.cta ?? "";
+  const allLabel = categoriesText.all ?? "All";
+
+  // ⭐ Grouper les images par catégorie
   const grouped = useMemo(() => {
     const groups: Record<string, { name: string; url: string }[]> = {};
     
+    // ⭐ Garde : images doit être un objet
+    if (!images || typeof images !== 'object') return groups;
+    
     for (const [name, url] of Object.entries(images)) {
-      // "lighting-2" → catégorie "lighting"
+      if (!name || !url) continue;
+      
       const lastDash = name.lastIndexOf('-');
       const category = lastDash > 0 ? name.slice(0, lastDash) : name;
       
@@ -31,7 +43,6 @@ export default function Catalogue() {
       groups[category].push({ name, url });
     }
     
-    // Trier par numéro dans chaque groupe
     for (const cat of Object.keys(groups)) {
       groups[cat].sort((a, b) => {
         const numA = parseInt(a.name.split('-').pop() || '0', 10);
@@ -43,16 +54,14 @@ export default function Catalogue() {
     return groups;
   }, [images]);
 
-  // ⭐ Images à afficher selon la catégorie sélectionnée
+  // ⭐ Images à afficher
   const displayedImages = useMemo(() => {
     if (selectedCategory === 'all') {
-      // Toutes les images, dans l'ordre des catégories
       return categoryOrder.flatMap((cat) => grouped[cat] || []);
     }
     return grouped[selectedCategory] || [];
   }, [selectedCategory, grouped]);
 
-  // ⭐ Compteur total
   const totalCount = Object.values(grouped).reduce((sum, arr) => sum + arr.length, 0);
 
   return (
@@ -60,11 +69,11 @@ export default function Catalogue() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in-up">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.catalogue.title}</h2>
-          <p className="text-xl text-foreground/70 max-w-2xl mx-auto">{t.catalogue.subtitle}</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">{titleText}</h2>
+          <p className="text-xl text-foreground/70 max-w-2xl mx-auto">{subtitleText}</p>
         </div>
 
-        {/* ⭐ Navigation par catégorie avec compteurs */}
+        {/* Navigation */}
         <div className="flex flex-wrap justify-center gap-3 mb-12 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
           <button
             type="button"
@@ -75,7 +84,7 @@ export default function Catalogue() {
                 : "bg-card text-foreground/70 border border-border hover:border-primary/50 hover:text-foreground"
             }`}
           >
-            {t.catalogue.categories.all}
+            {allLabel}
             <span className={`text-xs px-2 py-0.5 rounded-full ${selectedCategory === 'all' ? 'bg-primary-foreground/20' : 'bg-muted'}`}>
               {totalCount}
             </span>
@@ -84,7 +93,7 @@ export default function Catalogue() {
           {categoryOrder.map((cat) => {
             const isActive = selectedCategory === cat;
             const count = (grouped[cat] || []).length;
-            const catLabel = t.catalogue.categories[cat as keyof typeof t.catalogue.categories] || cat;
+            const catLabel = categoriesText[cat] || cat;
             
             return (
               <button
@@ -106,13 +115,13 @@ export default function Catalogue() {
           })}
         </div>
 
-        {/* ⭐ Grille riche */}
+        {/* Grille */}
         {displayedImages.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {displayedImages.map((img, i) => {
-              const wa = encodeURIComponent(
-                `Bonjour Med Elec — ${t.catalogue.cta} : ${img.name}`
-              );
+              const imgCategory = img.name.slice(0, img.name.lastIndexOf('-'));
+              const imgCategoryLabel = categoriesText[imgCategory] || imgCategory;
+              const wa = encodeURIComponent(`Bonjour Med Elec — ${ctaText} : ${imgCategoryLabel}`);
               
               return (
                 <div
@@ -123,16 +132,13 @@ export default function Catalogue() {
                 >
                   <img
                     src={img.url}
-                    alt={img.name}
+                    alt={imgCategoryLabel}
                     loading="lazy"
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   
-                  {/* Overlay au hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
-                    <p className="text-sm font-semibold mb-2 capitalize">
-                      {(t.catalogue.categories as Record<string, string>)[img.name.slice(0, img.name.lastIndexOf('-'))] || img.name}
-                    </p>
+                    <p className="text-sm font-semibold mb-2">{imgCategoryLabel}</p>
                     <a
                       href={`https://wa.me/${coordonees.whatsapp}?text=${wa}`}
                       target="_blank"
@@ -140,11 +146,10 @@ export default function Catalogue() {
                       onClick={(e) => e.stopPropagation()}
                       className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-accent transition-colors font-semibold text-xs text-center"
                     >
-                      {t.catalogue.cta}
+                      {ctaText}
                     </a>
                   </div>
 
-                  {/* Icône zoom */}
                   <div className="absolute top-3 right-3 p-2 rounded-full bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity">
                     <ImageIcon size={16} />
                   </div>
@@ -153,7 +158,6 @@ export default function Catalogue() {
             })}
           </div>
         ) : (
-          /* Empty state */
           <div className="text-center py-16 rounded-2xl border-2 border-dashed border-border">
             <ImageIcon className="mx-auto h-12 w-12 text-foreground/30 mb-4" />
             <p className="text-foreground/60 text-lg">
@@ -163,8 +167,8 @@ export default function Catalogue() {
         )}
       </div>
 
-      {/* ⭐ Lightbox */}
-      {lightboxIndex !== null && (
+      {/* Lightbox */}
+      {lightboxIndex !== null && displayedImages.length > 0 && (
         <Lightbox
           images={displayedImages}
           currentIndex={lightboxIndex}
