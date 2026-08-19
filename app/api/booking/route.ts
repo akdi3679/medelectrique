@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { bookingSchema, audioSchema } from '@/lib/validation';
 
 const WORKER_URL = process.env.WORKER_URL;
+const WORKER_SECRET = process.env.WORKER_SECRET; // ⭐ Ajout
 
 const rateLimitMap = new Map<string, { count: number; reset: number }>();
 function rateLimit(ip: string): boolean {
@@ -93,6 +94,9 @@ export async function POST(req: NextRequest) {
 
     const res = await fetch(WORKER_URL, {
       method: 'POST',
+      headers: {
+        'X-Worker-Secret': WORKER_SECRET, // ⭐ Secret header
+      },
       body: workerFormData,
       signal: AbortSignal.timeout(10000),
     });
