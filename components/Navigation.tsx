@@ -9,6 +9,7 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { t, language, isLoaded } = useLanguage();
+const { siteImg } = useBrandMedia();
 
   useEffect(() => setIsMounted(true), []);
   if (!isMounted || !isLoaded) return null;
@@ -22,10 +23,10 @@ export default function Navigation() {
           {/* Logo image */}
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
             <img
-              src="/logo.png"
-              alt="Med Elec"
-              className="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform"
-            />
+  src={siteImg.favicon || '/logo.png'}  // ← fallback sur /logo.png si pas encore uploadé
+  alt="Med Elec"
+  className="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform"
+/>
             <span className="font-semibold text-lg hidden sm:inline">Med Elec</span>
           </Link>
 
