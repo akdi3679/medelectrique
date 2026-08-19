@@ -1,12 +1,28 @@
 {
   "nav": { "services": "Services", "projects": "Réalisations", "testimonials": "Témoignages", "contact": "Contact", "booking": "Réserver", "quote": "Devis gratuit" },
-  "hero": { "title": "Électricien & climatisation à Tataouine", "subtitle": "Installation électrique, climatisation et réparation — un travail propre, sûr et garanti. Devis gratuit, intervention dans toute la Tunisie.", "cta": "Demander un devis" },
-  "services": {
-    "title": "Nos Services", "subtitle": "Trois spécialités, un seul standard : la qualité",
-    "electrical": { "title": "Installation Électrique", "desc": "Installation complète de systèmes électriques résidentiels et commerciaux, aux normes et en toute sécurité." },
-    "ac": { "title": "Installation Climatisation", "desc": "Pose et mise en service de climatiseurs split et multi-split, avec conseil sur le bon dimensionnement." },
-    "repair": { "title": "Réparation & Dépannage", "desc": "Diagnostic et réparation rapide de toute panne électrique ou climatisation, intervention urgente." }
+  
+  "hero": {
+    "title": "Votre expert électricien à Tataouine",
+    "subtitle": "Installation électrique, climatisation et réparation. Devis gratuit, urgences 24/7.",
+    "imageAlt": "Installation électrique professionnelle à Tataouine"
   },
+  "services": {
+    "title": "Nos Services",
+    "subtitle": "Des solutions complètes pour vos besoins électriques",
+    "electrical": {
+      "title": "Installation électrique",
+      "desc": "Installation complète de systèmes électriques résidentiels et commerciaux."
+    },
+    "ac": {
+      "title": "Climatisation",
+      "desc": "Installation et maintenance de systèmes de climatisation."
+    },
+    "repair": {
+      "title": "Réparation & Dépannage",
+      "desc": "Réparation rapide de pannes électriques, urgences 24/7."
+    }
+  }
+,
   "process": { "title": "Comment ça se passe", "subtitle": "Simple, transparent, sans surprise", "s1t": "Appel ou WhatsApp", "s1d": "Vous décrivez le besoin, on répond vite.", "s2t": "Visite & devis gratuit", "s2d": "On se déplace, on mesure, on chiffre. Gratuit, sans engagement.", "s3t": "Exécution propre", "s3d": "Travail soigné, aux normes, dans les délais annoncés.", "s4t": "Suivi après chantier", "s4d": "On reste joignables une fois le travail terminé." },
   "projects": { "title": "Nos Réalisations", "subtitle": "Quelques exemples de notre travail", "viewMore": "Voir plus" },
   "stats2": { "freeQuote": "Devis gratuit", "urgent": "Urgences 24/7", "coverage": "Toute la Tunisie", "clean": "Travail propre & soigné" },

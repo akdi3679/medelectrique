@@ -8,15 +8,18 @@ export default function Hero() {
   const { t, language, isLoaded } = useLanguage();
   if (!isLoaded) return null;
   const isRTL = language === "ar";
-  const lang = language as "fr" | "en" | "ar";
 
   return (
     <section className={`pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-background to-muted ${isRTL ? "rtl" : "ltr"}`}>
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="animate-fade-in-up">
-            <h1 className="text-5xl md:text-6xl font-bold leading-tight text-balance mb-6">{t.hero.title}</h1>
-            <p className="text-xl text-foreground/70 mb-8 leading-relaxed">{t.hero.subtitle}</p>
+            <h1 className="text-5xl md:text-6xl font-bold leading-tight text-balance mb-6">
+              {t.hero.title}
+            </h1>
+            <p className="text-xl text-foreground/70 mb-8 leading-relaxed">
+              {t.hero.subtitle}
+            </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a
                 href="#booking"
@@ -40,7 +43,7 @@ export default function Hero() {
             <div className="aspect-square rounded-2xl overflow-hidden">
               <img
                 src={cdn(brandImages.hero.publicId, { w: 1200, ar: '1:1' })}
-                alt={brandImages.hero.alt[lang]}
+                alt={t.hero.imageAlt}
                 fetchPriority="high"
                 className="w-full h-full object-cover"
               />

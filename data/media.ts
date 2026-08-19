@@ -9,24 +9,20 @@ export const cloudinaryConfig = {
   },
 };
 
-// ⭐ Images fixes (public IDs Cloudinary)
+// ⭐ Images fixes (public IDs seulement, pas de traductions)
 export const brandImages = {
   hero: {
     publicId: 'medelec/site-img/hero',
-    alt: {
-      fr: 'Installation électrique professionnelle à Tataouine',
-      en: 'Professional electrical installation in Tataouine',
-      ar: 'تركيب كهربائي احترافي في تطاوين',
-    },
   },
   bio: {
     publicId: 'medelec/site-img/bio',
-    alt: { fr: 'Mohammed Kadi', en: 'Mohammed Kadi', ar: 'محمد القاضي' },
   },
-  favicon: { publicId: 'medelec/site-img/favicon' },
+  favicon: { 
+    publicId: 'medelec/site-img/favicon',
+  },
 };
 
-// ⭐ Images catalogue
+// ⭐ Images catalogue (public IDs seulement)
 export const catalogueImages = {
   'decorative-lighting': 'medelec/catalogue/decorative-lighting',
   'lamps-fixtures': 'medelec/catalogue/lamps-fixtures',

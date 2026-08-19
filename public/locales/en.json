@@ -1,12 +1,28 @@
 {
   "nav": { "services": "Services", "projects": "Projects", "testimonials": "Testimonials", "contact": "Contact", "booking": "Book Now", "quote": "Free Quote" },
-  "hero": { "title": "Electrician & AC specialist in Tataouine", "subtitle": "Electrical installation, air conditioning and repair — clean, safe, guaranteed work. Free quote, intervention all over Tunisia.", "cta": "Get a Quote" },
-  "services": {
-    "title": "Our Services", "subtitle": "Three specialties, one standard: quality",
-    "electrical": { "title": "Electrical Installation", "desc": "Complete electrical systems for residential and commercial projects, up to code and fully safe." },
-    "ac": { "title": "AC Installation", "desc": "Supply and installation of split and multi-split air conditioning, with proper sizing advice." },
-    "repair": { "title": "Repair & Troubleshooting", "desc": "Fast diagnosis and repair of any electrical or AC failure, emergency intervention." }
+  
+  "hero": {
+    "title": "Your electrical expert in Tataouine",
+    "subtitle": "Electrical installation, air conditioning and repair. Free quotes, 24/7 emergencies.",
+    "imageAlt": "Professional electrical installation in Tataouine"
   },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Complete solutions for your electrical needs",
+    "electrical": {
+      "title": "Electrical Installation",
+      "desc": "Complete installation of residential and commercial electrical systems."
+    },
+    "ac": {
+      "title": "Air Conditioning",
+      "desc": "Installation and maintenance of air conditioning systems."
+    },
+    "repair": {
+      "title": "Repair & Troubleshooting",
+      "desc": "Fast repair of electrical failures, 24/7 emergencies."
+    }
+  }
+,
   "process": { "title": "How It Works", "subtitle": "Simple, transparent, no surprises", "s1t": "Call or WhatsApp", "s1d": "Describe your need, we reply fast.", "s2t": "Free visit & quote", "s2d": "We come, measure, quote. Free, no commitment.", "s3t": "Clean execution", "s3d": "Tidy work, up to code, on the announced schedule.", "s4t": "After-work follow-up", "s4d": "We stay reachable once the job is done." },
   "projects": { "title": "Our Projects", "subtitle": "A few examples of our work", "viewMore": "View More" },
   "stats2": { "freeQuote": "Free quote", "urgent": "24/7 emergencies", "coverage": "All of Tunisia", "clean": "Clean & careful work" },
