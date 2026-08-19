@@ -8,7 +8,7 @@ import Stats from "./Stats";
 import RenewableEnergy from "./RenewableEnergy";
 import BookingSystem from "./BookingSystem";
 import Bio from "./Bio";
-import Testimonials from "./Testimonials";
+import Reviews from "./Reviews";
 import Contact from "./Contact";
 import Footer from "./Footer";
 import CallButtons from "./CallButtons";
@@ -30,7 +30,7 @@ export default function Home({ lang }: { lang: Language }) {
 <Stats />
 <BookingSystem />
 <Bio />
-<Testimonials />
+<Reviews />
 <Faq />
 <Contact />
         <Footer />
