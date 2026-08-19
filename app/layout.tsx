@@ -1,6 +1,6 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Noto_Sans_Arabic } from "next/font/google";
+import { Inter, JetBrains_Mono, Noto_Kufi_Arabic } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -13,15 +13,37 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://medelectrique.verc
 const SITE_NAME = "Med Elec";
 const SITE_TAGLINE = "Électricien & climatisation à Tataouine";
 
+
+// Police Apple-style (SF Pro-like) pour FR/EN
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+// Police arabe élégante (Noto Kufi = moderne et lisible)
+const arabic = Noto_Kufi_Arabic({
+  subsets: ["arabic"],
+  variable: "--font-arabic",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+// Police mono pour code/nombres
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
+
 // ⭐ Metadata SEO complète
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  
-  title: {
-    default: `${SITE_NAME} — ${SITE_TAGLINE}`,
-    template: `%s | ${SITE_NAME}`,
-  },
+ 
+  title: "Med Elec — Électricien & climatisation à Tataouine",
   description: "Installation électrique, climatisation et réparation dans toute la Tunisie. Devis gratuit, urgences 24/7.",
+
   keywords: [
     "électricien",
     "tataouine",
@@ -172,8 +194,9 @@ const jsonLd = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning>
-      <body className={`${inter.variable} ${arabic.variable} ${jetbrains.variable} font-sans antialiased`}>
-        {/* ⭐ JSON-LD pour le SEO structuré */}
+  <body
+        className={`${inter.variable} ${arabic.variable} ${jetbrains.variable} font-sans antialiased`}
+      >        {/* ⭐ JSON-LD pour le SEO structuré */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

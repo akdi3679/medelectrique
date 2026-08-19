@@ -7,7 +7,6 @@ export default function Bio() {
   const { t, language, isLoaded } = useLanguage();
   if (!isLoaded) return null;
   const isRTL = language === "ar";
-  const lang = language as "fr" | "en" | "ar";
 
   return (
     <section id="bio" className={`py-20 px-4 sm:px-6 lg:px-8 bg-background ${isRTL ? "rtl" : "ltr"}`}>
@@ -16,7 +15,7 @@ export default function Bio() {
           <div className="aspect-[4/5] rounded-2xl overflow-hidden">
             <img
               src={cdn(brandImages.bio.publicId, { w: 900, ar: '4:5' })}
-              alt={brandImages.bio.alt[lang]}
+              alt={t.bio?.imageAlt || "Mohammed Kadi"}
               loading="lazy"
               className="w-full h-full object-cover"
             />

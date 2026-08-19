@@ -12,13 +12,13 @@ export const cloudinaryConfig = {
 // ⭐ Images fixes (public IDs seulement, pas de traductions)
 export const brandImages = {
   hero: {
-    publicId: 'medelec/site-img/hero',
+    publicId: 'site-img/hero',
   },
   bio: {
-    publicId: 'medelec/site-img/bio',
+    publicId: 'site-img/bio',
   },
   favicon: { 
-    publicId: 'medelec/site-img/favicon',
+    publicId: 'site-img/favicon',
   },
 };
 

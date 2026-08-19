@@ -77,8 +77,11 @@
 }
 
 @theme inline {
-  --font-sans: "Geist", "Geist Fallback";
-  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  /* Apple-style default (FR/EN) */
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono), "SF Mono", "Menlo", monospace;
+  --font-arabic: var(--font-arabic), "Geeza Pro", "Arabic Typesetting", sans-serif;
+  
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -107,14 +110,6 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 @layer base {
@@ -123,6 +118,22 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* ⭐ Police arabe appliquée automatiquement sur tout le site en AR */
+  html[lang="ar"] body {
+    font-family: var(--font-arabic), -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  
+  /* ⭐ Class utilitaire pour forcer la police arabe (utile dans le switcher) */
+  .font-arabic {
+    font-family: var(--font-arabic), -apple-system, BlinkMacSystemFont, sans-serif !important;
+  }
+  
+  /* Améliore le rendu de l'arabe */
+  html[lang="ar"] body {
+    line-height: 1.8;
+    letter-spacing: 0;
   }
 }
 
