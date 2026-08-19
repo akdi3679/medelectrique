@@ -96,7 +96,7 @@
     "subtitle": "What we can install at your place — you pick, we handle the rest.",
     "cta": "I want this at home",
     "categories": {
-     
+      "all": "All",
       "lighting": "Lighting",
       "lamps": "Lamps",
       "led": "LED",

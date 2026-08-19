@@ -1,6 +1,6 @@
 // data/catalogue.ts
 // ⭐ Data pure : structure + IDs de catégories
-export type CategoryId = 'all' | 'lighting' | 'lamps' | 'led' | 'sockets' | 'ambiance' | 'commercial';
+export type CategoryId =  'lighting' | 'lamps' | 'led' | 'sockets' | 'ambiance' | 'commercial';
 
 export interface CatalogueItem {
   id: string;
@@ -19,7 +19,7 @@ export const catalogue: CatalogueItem[] = [
 
 // ⭐ Ordre des catégories dans la navigation
 export const categoryOrder: CategoryId[] = [
-  'all',
+  
   'lighting',
   'lamps',
   'led',
