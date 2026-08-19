@@ -8,37 +8,45 @@ import { coordonees } from "@/data/coordonees";
 import { useMediaImages } from "@/lib/useMedia";
 import Lightbox from "./Lightbox";
 
+// ⭐ Objets vides STABLES (même référence à chaque render)
+const EMPTY_OBJ = {};
+const EMPTY_CATEGORIES: Record<string, string> = {};
+const EMPTY_ARRAY: any[] = [];
+
 export default function Catalogue() {
   const { t, language, isLoaded } = useLanguage();
   const images = useMediaImages('catalogue');
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | 'all'>('all');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  // ⭐ Memoize les textes pour éviter la boucle
+  const catalogueText = useMemo(() => {
+    return (t && t.catalogue && typeof t.catalogue === 'object') ? t.catalogue : EMPTY_OBJ;
+  }, [t]);
+
+  const categoriesText = useMemo(() => {
+    const cats = (catalogueText as any).categories;
+    return (cats && typeof cats === 'object') ? cats : EMPTY_CATEGORIES;
+  }, [catalogueText]);
+
+  const titleText = (catalogueText as any).title ?? "";
+  const subtitleText = (catalogueText as any).subtitle ?? "";
+  const ctaText = (catalogueText as any).cta ?? "";
+  const allLabel = categoriesText.all ?? (language === "ar" ? "الكل" : language === "en" ? "All" : "Tous");
+
   if (!isLoaded) return null;
   const lang = language as "fr" | "en" | "ar";
   const isRTL = lang === "ar";
 
-  // ⭐ Gardes de sécurité pour les textes
-  const catalogueText = t?.catalogue ?? {};
-  const categoriesText = (catalogueText.categories ?? {}) as Record<string, string>;
-  const titleText = catalogueText.title ?? "";
-  const subtitleText = catalogueText.subtitle ?? "";
-  const ctaText = catalogueText.cta ?? "";
-  const allLabel = categoriesText.all ?? "All";
-
-  // ⭐ Grouper les images par catégorie
+  // ⭐ Grouper par catégorie
   const grouped = useMemo(() => {
     const groups: Record<string, { name: string; url: string }[]> = {};
-    
-    // ⭐ Garde : images doit être un objet
     if (!images || typeof images !== 'object') return groups;
     
     for (const [name, url] of Object.entries(images)) {
       if (!name || !url) continue;
-      
       const lastDash = name.lastIndexOf('-');
       const category = lastDash > 0 ? name.slice(0, lastDash) : name;
-      
       if (!groups[category]) groups[category] = [];
       groups[category].push({ name, url });
     }
@@ -54,26 +62,25 @@ export default function Catalogue() {
     return groups;
   }, [images]);
 
-  // ⭐ Images à afficher
   const displayedImages = useMemo(() => {
     if (selectedCategory === 'all') {
-      return categoryOrder.flatMap((cat) => grouped[cat] || []);
+      return categoryOrder.flatMap((cat) => grouped[cat] || EMPTY_ARRAY);
     }
-    return grouped[selectedCategory] || [];
+    return grouped[selectedCategory] || EMPTY_ARRAY;
   }, [selectedCategory, grouped]);
 
-  const totalCount = Object.values(grouped).reduce((sum, arr) => sum + arr.length, 0);
+  const totalCount = useMemo(() => {
+    return Object.values(grouped).reduce((sum, arr) => sum + arr.length, 0);
+  }, [grouped]);
 
   return (
     <section id="catalogue" className={`py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 ${isRTL ? "rtl" : "ltr"}`}>
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-12 animate-fade-in-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">{titleText}</h2>
           <p className="text-xl text-foreground/70 max-w-2xl mx-auto">{subtitleText}</p>
         </div>
 
-        {/* Navigation */}
         <div className="flex flex-wrap justify-center gap-3 mb-12 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
           <button
             type="button"
@@ -92,7 +99,7 @@ export default function Catalogue() {
 
           {categoryOrder.map((cat) => {
             const isActive = selectedCategory === cat;
-            const count = (grouped[cat] || []).length;
+            const count = (grouped[cat] || EMPTY_ARRAY).length;
             const catLabel = categoriesText[cat] || cat;
             
             return (
@@ -115,11 +122,12 @@ export default function Catalogue() {
           })}
         </div>
 
-        {/* Grille */}
         {displayedImages.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {displayedImages.map((img, i) => {
-              const imgCategory = img.name.slice(0, img.name.lastIndexOf('-'));
+              const imgCategory = img.name.lastIndexOf('-') > 0 
+                ? img.name.slice(0, img.name.lastIndexOf('-')) 
+                : img.name;
               const imgCategoryLabel = categoriesText[imgCategory] || imgCategory;
               const wa = encodeURIComponent(`Bonjour Med Elec — ${ctaText} : ${imgCategoryLabel}`);
               
@@ -167,7 +175,6 @@ export default function Catalogue() {
         )}
       </div>
 
-      {/* Lightbox */}
       {lightboxIndex !== null && displayedImages.length > 0 && (
         <Lightbox
           images={displayedImages}

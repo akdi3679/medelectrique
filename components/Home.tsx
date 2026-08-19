@@ -22,9 +22,21 @@ export default function Home({ lang }: { lang: Language }) {
     <LanguageProvider initialLanguage={lang}>
 
       <main className="min-h-screen bg-background">
-     
+        <Navigation />
+        <Hero />
+       <Services />
 <Catalogue />
-
+<Process />
+<Projects />
+<Stats />
+<BookingSystem />
+<Bio />
+<Reviews />
+<Faq />
+<Contact />
+        <Footer />
+        <Toaster /> 
+        <CallButtons />
       </main>
 
     </LanguageProvider>
