@@ -65,5 +65,72 @@
   },
   "hours": { "title": "Horaires", "week": "Lundi – Samedi : 8h00 – 18h00", "sun": "Dimanche : fermé", "emergency": "Urgences dépannage : 24h/24, 7j/7" },
   "map": { "title": "Zone d'intervention", "zone": "Disponibles dans toute la Tunisie" },
-  "footer": { "rights": "Tous droits réservés", "tagline": "Solutions électriques professionnelles pour chaque projet", "company": "Entreprise", "about": "À Propos", "certifications": "Certifications", "follow": "Nous Suivre", "privacy": "Politique de Confidentialité", "terms": "Conditions d'Utilisation" }
+  "footer": { "rights": "Tous droits réservés", "tagline": "Solutions électriques professionnelles pour chaque projet", "company": "Entreprise", "about": "À Propos", "certifications": "Certifications", "follow": "Nous Suivre", "privacy": "Politique de Confidentialité", "terms": "Conditions d'Utilisation" },
+  
+  "faq": {
+    "title": "Questions Fréquentes",
+    "subtitle": "Tout ce que nos clients nous demandent souvent.",
+    "cost-ac": {
+      "q": "Combien coûte l'installation d'un climatiseur ?",
+      "a": "Le prix dépend de la puissance et de la pose. La visite et le devis sont gratuits — contactez-nous sur WhatsApp pour une réponse rapide."
+    },
+    "free-quote": {
+      "q": "Le devis est-il vraiment gratuit ?",
+      "a": "Oui : déplacement, visite et devis gratuits, sans aucun engagement."
+    },
+    "coverage": {
+      "q": "Intervenez-vous en dehors de Tataouine ?",
+      "a": "Oui, nous nous déplaçons dans toute la Tunisie selon le projet."
+    },
+    "emergency": {
+      "q": "Que faire en cas de panne électrique urgente ?",
+      "a": "Appelez directement ou envoyez un WhatsApp : les urgences sont traitées 24h/24, 7j/7."
+    },
+    "client-material": {
+      "q": "Installez-vous du matériel acheté par le client ?",
+      "a": "Oui, nous posons aussi votre propre matériel, avec garantie sur la pose."
+    }
+  }
+,
+  "catalogue": {
+    "title": "Idées & Inspiration",
+    "subtitle": "Ce que nous pouvons installer chez vous — choisissez, on s'occupe du reste.",
+    "cta": "Je veux ça chez moi",
+    "categories": {
+      "all": "Tous",
+      "lighting": "Éclairage",
+      "lamps": "Luminaires",
+      "led": "LED",
+      "sockets": "Prises",
+      "ambiance": "Ambiance",
+      "commercial": "Commercial"
+    },
+    "items": {
+      "decorative-lighting": {
+        "title": "Éclairage décoratif",
+        "desire": "Des suspensions qui transforment vos soirées."
+      },
+      "lamps-fixtures": {
+        "title": "Luminaires & lampes",
+        "desire": "Une lampe bien placée change toute une pièce."
+      },
+      "led-strips": {
+        "title": "LED & rubans LED",
+        "desire": "Moderne, économique, ambiance garantie."
+      },
+      "sockets-switches": {
+        "title": "Prises & interrupteurs design",
+        "desire": "Du beau matériel que vous voyez tous les jours."
+      },
+      "living-room": {
+        "title": "Ambiance salon",
+        "desire": "Un salon éclairé comme dans les magazines."
+      },
+      "storefronts": {
+        "title": "Vitrines & commerces",
+        "desire": "Attirez les regards vers votre magasin."
+      }
+    }
+  }
+
 }

@@ -65,4 +65,71 @@
   "hours": { "title": "Business Hours", "week": "Monday – Saturday: 8:00 – 18:00", "sun": "Sunday: closed", "emergency": "Emergency repairs: 24/7" },
   "map": { "title": "Service Area", "zone": "Available all over Tunisia" },
   "footer": { "rights": "All rights reserved", "tagline": "Professional electrical solutions for every project", "company": "Company", "about": "About Us", "certifications": "Certifications", "follow": "Follow Us", "privacy": "Privacy Policy", "terms": "Terms of Service" }
+,
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything our clients often ask us.",
+    "cost-ac": {
+      "q": "How much does AC installation cost?",
+      "a": "Price depends on capacity and installation. Visit and quote are free — contact us on WhatsApp for a fast answer."
+    },
+    "free-quote": {
+      "q": "Is the quote really free?",
+      "a": "Yes: travel, visit and quote are free, with no commitment."
+    },
+    "coverage": {
+      "q": "Do you work outside Tataouine?",
+      "a": "Yes, we travel all over Tunisia depending on the project."
+    },
+    "emergency": {
+      "q": "What to do in an electrical emergency?",
+      "a": "Call or WhatsApp us directly: emergencies are handled 24/7."
+    },
+    "client-material": {
+      "q": "Do you install client-bought equipment?",
+      "a": "Yes, we also install your own equipment, with a workmanship guarantee."
+    }
+  },
+  
+  "catalogue": {
+    "title": "Ideas & Inspiration",
+    "subtitle": "What we can install at your place — you pick, we handle the rest.",
+    "cta": "I want this at home",
+    "categories": {
+      "all": "All",
+      "lighting": "Lighting",
+      "lamps": "Lamps",
+      "led": "LED",
+      "sockets": "Sockets",
+      "ambiance": "Ambiance",
+      "commercial": "Commercial"
+    },
+    "items": {
+      "decorative-lighting": {
+        "title": "Decorative lighting",
+        "desire": "Pendants that transform your evenings."
+      },
+      "lamps-fixtures": {
+        "title": "Lamps & fixtures",
+        "desire": "The right lamp changes the whole room."
+      },
+      "led-strips": {
+        "title": "LED & LED strips",
+        "desire": "Modern, efficient, guaranteed mood."
+      },
+      "sockets-switches": {
+        "title": "Designer sockets & switches",
+        "desire": "Beautiful hardware you see every day."
+      },
+      "living-room": {
+        "title": "Living-room mood",
+        "desire": "A living room lit like a magazine."
+      },
+      "storefronts": {
+        "title": "Stores & storefronts",
+        "desire": "Make eyes turn to your store."
+      }
+    }
+  }
+
 }
