@@ -22,7 +22,7 @@ export default function Navigation() {
           {/* Logo image */}
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
             <img
-              src="/images/favicon.png"
+              src="/public/logo.png"
               alt="Med Elec"
               className="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform"
             />

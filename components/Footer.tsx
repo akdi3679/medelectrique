@@ -63,7 +63,7 @@ setTimeout(() => setSparks((prev) => prev.filter((s) => !ids.includes(s.id))), 9
         <div>
           <div className="flex items-center gap-2 mb-4">
            <img
-  src="/images/favicon.png"
+  src="/public/logo.png"
   alt="Med Elec"
   className="w-10 h-10 rounded-lg object-contain"
 />
