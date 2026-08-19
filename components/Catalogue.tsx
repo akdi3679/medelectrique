@@ -3,13 +3,12 @@ import { useState } from "react";
 import { useLanguage } from "@/lib/i18n-context";
 import { catalogue as catalogueItems, categoryOrder, type CategoryId } from "@/data/catalogue";
 import { coordonees } from "@/data/coordonees";
-import { useFolderMedia } from "@/lib/useFolderMedia";
+import { useMediaImage } from "@/lib/useMedia";
 
 export default function Catalogue() {
   const { t, language, isLoaded } = useLanguage();
-  const { images: mediaCatalogue } = useFolderMedia('catalogue');
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('all');
-  
+  const images = useMediaImages('catalogue'); 
   if (!isLoaded) return null;
   const lang = language as "fr" | "en" | "ar";
   const isRTL = lang === "ar";
@@ -53,7 +52,7 @@ export default function Catalogue() {
         {/* Grille filtrée */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item, i) => {
-            const imgUrl = mediaCatalogue[item.id];
+            const imgUrl = images[item.id];
             const itemText = t.catalogue.items[item.id as keyof typeof t.catalogue.items] as {
               title?: string;
               desire?: string;

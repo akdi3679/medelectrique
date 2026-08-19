@@ -1,18 +1,16 @@
 "use client";
 import { ArrowRight, Phone, Calendar } from "lucide-react";
 import { useLanguage } from "@/lib/i18n-context";
-import { useFolderMedia } from "@/lib/useFolderMedia";
+import { useMediaImage } from "@/lib/useMedia";
 
 export default function Hero() {
   const { t, language, isLoaded } = useLanguage();
   // ⭐ ⚠️ Adapte le nom du folder selon Cloudinary
-  const { images: siteImg } = useFolderMedia('site-img');
   
   if (!isLoaded) return null;
   const isRTL = language === "ar";
 
-  const heroUrl = siteImg.hero;
-
+const heroUrl = useMediaImage('hero'); 
   return (
     <section className={`pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-background to-muted ${isRTL ? "rtl" : "ltr"}`}>
       <div className="max-w-7xl mx-auto">
@@ -36,15 +34,10 @@ export default function Hero() {
           <div className="relative animate-scale-in">
             <div className="aspect-square rounded-2xl overflow-hidden bg-muted">
               {heroUrl ? (
-                <img
-                  src={heroUrl}
-                  alt={t.hero.imageAlt}
-                  fetchPriority="high"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20" />
-              )}
+    <img src={heroUrl} alt={t.hero.imageAlt} fetchPriority="high" className="w-full h-full object-cover" />
+  ) : (
+    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20" />
+  )}
             </div>
             <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
           </div>

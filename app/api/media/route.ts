@@ -7,19 +7,19 @@ const CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'du0frvxjo';
 const KEY = process.env.CLOUDINARY_API_KEY;
 const SECRET = process.env.CLOUDINARY_API_SECRET;
 
-// ⭐ Whitelist des folders autorisés
-// ⚠️ ADAPTE ces chemins selon ce que tu vois dans Cloudinary
-const ALLOWED_FOLDERS = new Set([
-  'site-img',           // ← Si tes folders sont à la racine
-  'catalogue',
-  'services',
-  'projects',
-  // OU si tu as un folder parent "medelec" :
-  // 'medelec/site-img',
-  // 'medelec/catalogue',
-  // 'medelec/services',
-  // 'medelec/projects',
-]);
+// ⭐⭐⭐ SINGLE SOURCE OF TRUTH (côté serveur uniquement)
+// Le client envoie la clé, le serveur résout folder + filename
+const MEDIA_MAP: Record<string, { folder: string; name?: string }> = {
+  // ── Groupes : retournent toutes les images du folder ──
+  site:      { folder: 'site-img' },
+  catalogue: { folder: 'catalogue' },
+  services:  { folder: 'services' },
+  projects:  { folder: 'projects' },
+
+  // ── Clés individuelles : retournent une image précise ──
+  hero:    { folder: 'site-img', name: 'hero' },
+  bio:     { folder: 'site-img', name: 'bio' },
+};
 
 // Rate limit
 const rateLimitMap = new Map<string, { count: number; reset: number }>();
@@ -47,19 +47,22 @@ export async function GET(req: Request) {
   }
 
   const { searchParams } = new URL(req.url);
-  const folder = searchParams.get('folder');
+  const key = searchParams.get('key');
 
-  // ⭐ Validation du folder
-  if (!folder || !ALLOWED_FOLDERS.has(folder)) {
-    console.error('[media] Invalid folder:', folder);
-    return NextResponse.json({ error: 'Invalid folder' }, { status: 400 });
+  // ⭐ Validation stricte : la clé DOIT exister dans la map serveur
+  if (!key || !(key in MEDIA_MAP)) {
+    return NextResponse.json({ error: 'Invalid key' }, { status: 400 });
   }
 
+  const { folder, name } = MEDIA_MAP[key];
+
   try {
-    // ⭐ Search par folder — marche en dynamic folder mode
-    const expression = `folder:"${folder}" AND resource_type:image`;
-    
-    console.log('[media] Searching folder:', folder);
+    // ⭐ Expression construite UNIQUEMENT avec des valeurs serveur
+    // (jamais avec l'input utilisateur → zéro injection)
+    let expression = `folder:"${folder}" AND resource_type:image`;
+    if (name) {
+      expression += ` AND filename:"${name}"`;
+    }
 
     const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/resources/search`, {
       method: 'POST',
@@ -67,10 +70,7 @@ export async function GET(req: Request) {
         Authorization: `Basic ${btoa(`${KEY}:${SECRET}`)}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        expression,
-        max_results: 100,
-      }),
+      body: JSON.stringify({ expression, max_results: 100 }),
       signal: AbortSignal.timeout(8000),
     });
 
@@ -81,15 +81,11 @@ export async function GET(req: Request) {
     }
 
     const data = await r.json();
-    
-    // ⭐ Log pour debug
-    console.log(`[media] Found ${data.resources?.length ?? 0} images in folder "${folder}"`);
 
-    // ⭐ Map par filename (dynamic mode : public_id sans chemin)
     const images: Record<string, string> = {};
     for (const res of data.resources ?? []) {
-      const name = res.filename || res.public_id;
-      images[name] = res.secure_url;
+      const imageName = res.filename || res.public_id;
+      images[imageName] = res.secure_url;
     }
 
     return NextResponse.json({ images });
