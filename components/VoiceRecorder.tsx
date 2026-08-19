@@ -103,25 +103,32 @@ const AUDIO_GAIN = 2.5; // 2.5x plus fort (augmente à 3.0 si encore trop faible
   // ────────────────────────────────────────────
 
 
+// Dans VoiceRecorder.tsx
+
+// ⭐ NOUVELLE VERSION : Force AAC (codec universel)
 const getMimeType = useCallback((): string => {
-  // ⭐ MP4/AAC est le mieux supporté par FluffyChat
   const types = [
-    "audio/mp4",
-    "audio/aac", 
-    "audio/mpeg", // MP3 fallback
+    // AAC dans MP4 = standard mondial des messages vocaux
+    { mime: "audio/mp4;codecs=mp4a.40.2", ext: "m4a" },
+    { mime: "audio/mp4;codecs=aac", ext: "m4a" },
+    { mime: "audio/aac", ext: "aac" },
+    { mime: "audio/mp4", ext: "m4a" },
+    // MP3 fallback
+    { mime: "audio/mpeg", ext: "mp3" },
   ];
-  
-  for (const type of types) {
-    if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(type)) {
-      console.log('[VoiceRecorder] Selected MIME:', type);
-      return type;
+
+  for (const { mime } of types) {
+    if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(mime)) {
+      console.log('[VoiceRecorder] ✅ Selected MIME:', mime);
+      return mime;
     }
   }
-  
-  // ⚠️ Fallback si rien ne marche (rare)
-  console.warn('[VoiceRecorder] No preferred MIME supported, using default');
+
+  console.warn('[VoiceRecorder] ⚠️ No preferred MIME supported');
   return "";
 }, []);
+
+// ⭐ NOUVELLE logique d'extension (dans recorder.onstop)
 
   const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -329,40 +336,44 @@ const startRecording = useCallback(async () => {
       }
     };
 
-    recorder.onstop = () => {
-      const finalMime = recorder.mimeType || mimeType || "audio/mp4";
-      const blob = new Blob(chunksRef.current, { type: finalMime });
+   recorder.onstop = () => {
+  const finalMime = recorder.mimeType || mimeType || "audio/mp4";
+  const blob = new Blob(chunksRef.current, { type: finalMime });
 
-      console.log('[VoiceRecorder] Final blob (amplified):', {
-        size: blob.size,
-        type: blob.type,
-        chunks: chunksRef.current.length,
-        durationMs: Date.now() - startTimeRef.current,
-        gain: AUDIO_GAIN,
-      });
+  console.log('[VoiceRecorder] Final blob:', {
+    size: blob.size,
+    type: blob.type,
+    chunks: chunksRef.current.length,
+    durationMs: Date.now() - startTimeRef.current,
+    gain: AUDIO_GAIN,
+  });
 
-      if (blob.size === 0) {
-        console.error('[VoiceRecorder] ❌ BLOB EST VIDE');
-        setError(t.noMic);
-        cleanupAll();
-        return;
-      }
+  if (blob.size === 0) {
+    console.error('[VoiceRecorder] ❌ BLOB VIDE');
+    setError(t.noMic);
+    cleanupAll();
+    return;
+  }
 
-      const url = URL.createObjectURL(blob);
-      setAudioBlob(blob);
-      setAudioUrl(url);
-      setDisplayDuration(Math.floor((Date.now() - startTimeRef.current) / 1000));
+  const url = URL.createObjectURL(blob);
+  setAudioBlob(blob);
+  setAudioUrl(url);
+  setDisplayDuration(Math.floor((Date.now() - startTimeRef.current) / 1000));
 
-      let extension = "webm";
-      if (finalMime.includes("mp4")) extension = "m4a";
-      else if (finalMime.includes("aac")) extension = "aac";
-      else if (finalMime.includes("mpeg")) extension = "mp3";
+  // ⭐ Extension basée sur le MIME final
+  let extension = "m4a";
+  if (finalMime.includes("mpeg")) extension = "mp3";
+  else if (finalMime.includes("aac")) extension = "aac";
+  else if (finalMime.includes("opus")) {
+    console.warn('[VoiceRecorder] ⚠️ Opus detected — may not play in FluffyChat');
+    extension = "webm";
+  }
 
-      const filename = `voice-${Date.now()}.${extension}`;
-      onAudioReady(blob, filename, Date.now() - startTimeRef.current);
+  const filename = `voice-${Date.now()}.${extension}`;
+  onAudioReady(blob, filename, Date.now() - startTimeRef.current);
 
-      cleanupAll();
-    };
+  cleanupAll();
+};
 
     recorder.onerror = () => {
       setError(t.noMic);

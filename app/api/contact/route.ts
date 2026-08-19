@@ -69,6 +69,11 @@ export async function POST(req: NextRequest) {
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
+  console.error('[contact] ❌ Worker error details:', {
+    status: res.status,
+    statusText: res.statusText,
+    body: errData,
+  });
       console.error('[contact] Worker error:', res.status, errData);
       if (res.status === 429) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
       return NextResponse.json({ error: 'Failed to send message' }, { status: 502 });
