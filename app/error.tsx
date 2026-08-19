@@ -2,7 +2,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
 export default function Error({
   error,
@@ -12,58 +11,63 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('[Medelec Error]', {
-      message: error.message,
-      stack: error.stack,
-      digest: error.digest,
-    });
+    // ⭐ Log ultra-détaillé pour trouver la cause
+    console.error('═══════════════════════════════════════');
+    console.error('🚨 ERROR BOUNDARY CAUGHT:');
+    console.error('Message:', error?.message);
+    console.error('Name:', error?.name);
+    console.error('Digest:', error?.digest);
+    console.error('Stack:', error?.stack);
+    console.error('Full error:', error);
+    console.error('═══════════════════════════════════════');
   }, [error]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-4 py-20">
-      <div className="text-center">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-accent/10">
-          <AlertTriangle className="h-10 w-10 text-accent" />
-        </div>
-        
-        <h1 className="text-4xl font-bold text-foreground md:text-5xl">
-          Une erreur est survenue
+    <div className="min-h-screen flex items-center justify-center bg-background p-8">
+      <div className="max-w-2xl w-full bg-red-50 border-2 border-red-500 rounded-xl p-8">
+        <h1 className="text-3xl font-bold text-red-700 mb-4">
+          🚨 Erreur détectée
         </h1>
-        <p className="mt-4 text-xl text-accent">oups, problème technique</p>
-        <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-foreground/70">
-          Quelque chose s'est mal passé. Notre équipe a été notifiée.
-        </p>
         
-        {process.env.NODE_ENV === 'development' && (
-          <details className="mx-auto mt-6 max-w-md rounded-lg border border-border bg-card p-4 text-left">
-            <summary className="cursor-pointer font-semibold text-foreground">
-              Détails techniques
-            </summary>
-            <pre className="mt-3 overflow-x-auto text-xs text-foreground/70">
-              {error.message}
-              {'\n\n'}
-              {error.digest && `Digest: ${error.digest}`}
-            </pre>
-          </details>
-        )}
-        
-        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
-          <button
-            onClick={reset}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3 font-semibold text-primary-foreground transition-all hover:bg-accent"
-          >
-            <RefreshCw size={18} />
-            Réessayer
-          </button>
-          <a 
-            href="/fr" 
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-primary px-8 py-3 font-semibold text-primary transition-colors hover:bg-primary/5"
-          >
-            <Home size={18} />
-            Accueil
-          </a>
+        <div className="bg-white rounded-lg p-4 mb-4 border border-red-200">
+          <p className="text-sm text-gray-600 mb-2">Message :</p>
+          <pre className="text-red-600 font-mono text-sm whitespace-pre-wrap break-words">
+            {error?.message || 'Aucun message'}
+          </pre>
         </div>
+
+        {error?.digest && (
+          <div className="bg-white rounded-lg p-4 mb-4 border border-red-200">
+            <p className="text-sm text-gray-600 mb-2">Digest :</p>
+            <code className="text-sm text-gray-800">{error.digest}</code>
+          </div>
+        )}
+
+        <div className="bg-white rounded-lg p-4 mb-4 border border-red-200">
+          <p className="text-sm text-gray-600 mb-2">Stack trace :</p>
+          <pre className="text-xs text-gray-700 font-mono whitespace-pre-wrap break-words max-h-64 overflow-auto">
+            {error?.stack || 'Aucun stack'}
+          </pre>
+        </div>
+
+        <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mb-4">
+          <p className="text-sm text-yellow-800 font-semibold mb-2">
+            📋 Action requise :
+          </p>
+          <ol className="text-sm text-yellow-700 space-y-1 list-decimal list-inside">
+            <li>Ouvre la <strong>Console</strong> (F12)</li>
+            <li>Copie-colle le message <code>🚨 ERROR BOUNDARY CAUGHT</code></li>
+            <li>Envoie-le moi pour le fix exact</li>
+          </ol>
+        </div>
+
+        <button
+          onClick={reset}
+          className="w-full px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
+        >
+          🔄 Réessayer
+        </button>
       </div>
-    </main>
+    </div>
   );
 }
