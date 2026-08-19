@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/lib/i18n-context";
+import { useBrandMedia } from "@/lib/brand-media"; // ✅ Import ajouté
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { t, language, isLoaded } = useLanguage();
-const { siteImg } = useBrandMedia();
+  const { siteImg } = useBrandMedia(); // ✅ Utilisation du hook
 
   useEffect(() => setIsMounted(true), []);
   if (!isMounted || !isLoaded) return null;
@@ -20,13 +21,21 @@ const { siteImg } = useBrandMedia();
     <nav className={`fixed top-0 w-full bg-background/80 backdrop-blur-md z-50 border-b border-border ${isRTL ? "rtl" : "ltr"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo image */}
+          {/* Logo image depuis Cloudinary avec fallback */}
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <img
-  src={siteImg.favicon || '/logo.png'}  // ← fallback sur /logo.png si pas encore uploadé
-  alt="Med Elec"
-  className="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform"
-/>
+            {siteImg.favicon ? (
+              <img
+                src={siteImg.favicon}
+                alt="Med Elec"
+                className="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform"
+              />
+            ) : (
+              <img
+                src="/logo.png"
+                alt="Med Elec"
+                className="w-10 h-10 rounded-lg object-contain group-hover:scale-110 transition-transform"
+              />
+            )}
             <span className="font-semibold text-lg hidden sm:inline">Med Elec</span>
           </Link>
 

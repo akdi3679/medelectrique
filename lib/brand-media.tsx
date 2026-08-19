@@ -19,12 +19,13 @@ export function BrandMediaProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (cache) return;
+    
     fetch('/api/brand')
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (d && typeof d === 'object') {
           cache = { ...empty, ...d };
-          setData(cache);
+          setData(cache); // ✅ Maintenant cache est de type BrandMedia (pas null)
         }
       })
       .catch(() => {});
