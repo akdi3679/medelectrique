@@ -1,14 +1,10 @@
 "use client";
-import { Zap, AirVent, Wrench, type LucideIcon } from "lucide-react";
 import { useLanguage } from "@/lib/i18n-context";
 import { serviceIds, type ServiceId } from "@/data/services";
-
+// components/Services.tsx
+import { Zap, AirVent, Wrench } from "lucide-react"; // ✅ Import UI ici
+const serviceIcons = { electrical: Zap, ac: AirVent, repair: Wrench };
 // ⭐ Map des icônes — logique UI dans le composant, pas dans data
-const serviceIcons: Record<ServiceId, LucideIcon> = {
-  electrical: Zap,
-  ac: AirVent,
-  repair: Wrench,
-};
 
 export default function Services() {
   const { t, language, isLoaded } = useLanguage();
