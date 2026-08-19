@@ -2,6 +2,7 @@
 import { useLanguage } from "@/lib/i18n-context";
 import { catalogue, catalogueStrings } from "@/data/catalogue";
 import { coordonees } from "@/data/coordonees";
+import { cdn } from "@/lib/cloudinary";
 
 export default function Catalogue() {
   const { language, isLoaded } = useLanguage();
@@ -21,21 +22,14 @@ export default function Catalogue() {
           {catalogue.map((item, i) => {
             const wa = encodeURIComponent(`Bonjour Med Elec — ${catalogueStrings.cta[lang]} : ${item.title[lang]}`);
             return (
-              <div key={i} className="group relative overflow-hidden rounded-xl aspect-[4/5] animate-fade-in-up" style={{ animationDelay: `${i * 80}ms`, contentVisibility: "auto" }}>
+              <div key={item.id} className="group relative overflow-hidden rounded-xl aspect-[4/5] animate-fade-in-up" style={{ animationDelay: `${i * 80}ms` }}>
                 <img
-                  src={item.image}
+                  src={cdn(item.imagePublicId, { w: 800, ar: '4:5' })}
                   alt={item.title[lang]}
                   loading="lazy"
-                  decoding="async"
-                  width={600}
-                  height={750}
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                
-                {/* Overlay sombre permanent en bas */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                
-                {/* Contenu texte (caché par défaut, visible au hover) */}
                 <div className="absolute inset-0 flex flex-col justify-end p-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <h3 className="text-2xl font-semibold mb-3">{item.title[lang]}</h3>
                   <p className="text-sm mb-4 leading-relaxed">{item.desire[lang]}</p>
@@ -48,8 +42,6 @@ export default function Catalogue() {
                     {catalogueStrings.cta[lang]}
                   </a>
                 </div>
-
-                {/* Titre visible sans hover (en bas) */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white group-hover:opacity-0 transition-opacity duration-300">
                   <h3 className="text-2xl font-semibold">{item.title[lang]}</h3>
                 </div>

@@ -1,11 +1,14 @@
 "use client";
 import { ArrowRight, Phone, Calendar } from "lucide-react";
 import { useLanguage } from "@/lib/i18n-context";
+import { cdn } from "@/lib/cloudinary";
+import { brandImages } from "@/data/media";
 
 export default function Hero() {
   const { t, language, isLoaded } = useLanguage();
   if (!isLoaded) return null;
   const isRTL = language === "ar";
+  const lang = language as "fr" | "en" | "ar";
 
   return (
     <section className={`pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-background to-muted ${isRTL ? "rtl" : "ltr"}`}>
@@ -34,10 +37,11 @@ export default function Hero() {
           </div>
 
           <div className="relative animate-scale-in">
-            <div className="aspect-square bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl overflow-hidden">
+            <div className="aspect-square rounded-2xl overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=1200&auto=format&fit=crop"
-                alt="Professional electrical installation"
+                src={cdn(brandImages.hero.publicId, { w: 1200, ar: '1:1' })}
+                alt={brandImages.hero.alt[lang]}
+                fetchPriority="high"
                 className="w-full h-full object-cover"
               />
             </div>
