@@ -1,7 +1,7 @@
 // lib/validation.ts
 import { z } from 'zod';
 
-// ⭐ Schémas Zod partagés entre client et serveur
+// ⭐ Schémas de validation
 export const contactSchema = z.object({
   name: z.string()
     .min(2, 'Name too short')
@@ -56,10 +56,16 @@ export const bookingSchema = z.object({
     .or(z.literal('')),
 });
 
-// ⭐ Validation audio (server-side)
+// ⭐⭐⭐ CORRIGÉ : accepte les paramètres de codec
 export const audioSchema = z.object({
-  size: z.number().max(10 * 1024 * 1024, 'Audio file too large (max 10MB)'),
-  type: z.string().regex(/^audio\/(webm|ogg|mp4|mpeg|wav)$/, 'Invalid audio format'),
+  size: z.number()
+    .min(1, 'Audio file is empty')
+    .max(10 * 1024 * 1024, 'Audio file too large (max 10MB)'),
+  
+  // ⭐ Accepte "audio/webm" ET "audio/webm;codecs=opus"
+  type: z.string()
+    .regex(/^audio\/(webm|ogg|mp4|mpeg|wav|x-m4a|aac)(;.*)?$/, 'Invalid audio format')
+    .or(z.literal('')), // ⭐ Accepte vide (certains navigateurs ne donnent pas le type)
 });
 
 export type ContactData = z.infer<typeof contactSchema>;
