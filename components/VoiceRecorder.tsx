@@ -300,13 +300,24 @@ export default function VoiceRecorder({ onAudioReady, disabled = false }: Props)
 
       recorder.onstop = () => {
         const finalMime = recorder.mimeType || mimeType || "audio/webm";
-        const blob = new Blob(chunksRef.current, { type: finalMime });
+  const blob = new Blob(chunksRef.current, { type: finalMime });
 
-        if (blob.size === 0) {
-          setError(t.noMic);
-          cleanupAll();
-          return;
-        }
+        console.log('[VoiceRecorder] Final blob:', {
+    size: blob.size,
+    type: blob.type,
+    chunks: chunksRef.current.length,
+    durationMs: Date.now() - startTimeRef.current,
+  });
+
+  if (blob.size === 0) {
+    console.error('[VoiceRecorder] ❌ BLOB EST VIDE');
+    setError(t.noMic);
+    cleanupAll();
+    return;
+  }
+   if (blob.size < 1000) {
+    console.error('[VoiceRecorder] ⚠️ Blob trop petit, probablement corrompu');
+  }
 
         // ⭐ Durée réelle calculée depuis startTime
         const actualDurationMs = Date.now() - startTimeRef.current;
